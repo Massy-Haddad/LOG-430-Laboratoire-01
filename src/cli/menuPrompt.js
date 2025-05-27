@@ -1,0 +1,41 @@
+import inquirer from 'inquirer';
+
+import searchProductCommand from './commands/searchProduct.js';
+import sellProductCommand from './commands/sellProduct.js';
+import returnSaleCommand from './commands/returnSale.js';
+import checkStockCommand from './commands/checkStock.js';
+
+export default async function menuPrompt(user) {
+  while (true) {
+    const { action } = await inquirer.prompt({
+      type: 'list',
+      name: 'action',
+      message: '🧭 Que souhaitez-vous faire ?',
+      choices: [
+        { name: '🔍 Rechercher un produit', value: 'search' },
+        { name: '🛒 Enregistrer une vente', value: 'sell' },
+        { name: '🔁 Gérer un retour', value: 'return' },
+        { name: '📦 Consulter le stock', value: 'stock' },
+        { name: '❌ Quitter', value: 'exit' }
+      ]
+    });
+
+    if (action === 'exit') break;
+
+    switch (action) {
+      case 'search':
+        await searchProductCommand();
+        break;
+      case 'sell':
+        await sellProductCommand(user);
+        break;
+      case 'return':
+        await returnSaleCommand(user);
+        break;
+      case 'stock':
+        await checkStockCommand();
+        break;
+    }
+
+  }
+}

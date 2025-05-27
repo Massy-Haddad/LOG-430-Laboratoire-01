@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15
+    container_name: pos_pg
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pos_data:/var/lib/postgresql/data
+    networks:
+      - pos-net
+
+  app:
+    build:
+      context: .
+    container_name: pos_app
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    tty: true            # nécessaire pour inquirer
+    stdin_open: true     # nécessaire pour interagir avec la CLI
+    command: tail -f /dev/null
+    networks:
+      - pos-net
+
+volumes:
+  pos_data:
+
+networks:
+  pos-net:

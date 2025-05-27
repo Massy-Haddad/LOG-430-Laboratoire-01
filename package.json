@@ -1,0 +1,39 @@
+{
+  "name": "log-430-laboratoire-01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "seed": "docker compose exec app node src/infrastructure/seed.js",
+    "cli": "docker compose exec app node src/cli/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Massy-Haddad/LOG-430-Laboratoire-01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Massy-Haddad/LOG-430-Laboratoire-01/issues"
+  },
+  "homepage": "https://github.com/Massy-Haddad/LOG-430-Laboratoire-01#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.4.1",
+    "cli-table3": "^0.6.5",
+    "commander": "^14.0.0",
+    "figlet": "^1.8.1",
+    "inquirer": "^12.6.1",
+    "ora": "^8.2.0",
+    "pg": "^8.16.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
+}
