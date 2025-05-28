@@ -25,7 +25,6 @@ services:
     working_dir: /usr/src/app
     tty: true            # nécessaire pour inquirer
     stdin_open: true     # nécessaire pour interagir avec la CLI
-    command: tail -f /dev/null
     networks:
       - pos-net
 

@@ -11,6 +11,3 @@ RUN npm install
 
 # Copie tout le code source
 COPY . .
-
-# Définit le conteneur comme interactif (à attendre des commandes)
-CMD ["tail", "-f", "/dev/null"]
