@@ -1,38 +1,41 @@
+
 # 002 - Séparation des responsabilités
 
 ## Structure du projet
 
-J’ai choisi de suivre le pattern **Clean Architecture** pour bien séparer les responsabilités :
+J’ai structuré le projet selon le pattern **Clean Architecture** pour assurer une séparation claire des responsabilités :
 
 - **Présentation (src/cli)**  
-  Contient uniquement l’interface console : menus, prompts, interaction avec l’utilisateur.  
+  Contient uniquement l’interface console (menus, prompts, interaction utilisateur).  
+  Les fichiers ici déclenchent des cas d’utilisation sans contenir de logique métier.  
   Exemples : `sellProduct.js`, `searchProduct.js`, etc.
 
 - **Logique métier (src/usecases)**  
-  Contient les vrais cas d’utilisations (rechercher, vendre, retour, stock).  
-  Utilise les repositories et les entités du domaine.  
-  Ne dépend d’aucune lib externe.
+  Contient les vrais cas d’utilisation (vendre un produit, retourner une vente, consulter le stock, etc.).  
+  Chaque usecase est construit sous forme de fonction `makeUseCase(...)` avec **injection de dépendances** (repositories).  
+  Ne dépend d’aucune librairie externe ou technologie spécifique.
 
 - **Persistance (src/infrastructure)**  
-  Contient les `repositories`, les `models Sequelize` et la config DB.  
-  Ici on interagit avec PostgreSQL via Sequelize.
+  Contient les implémentations concrètes des `repositories`, les `models Sequelize`, et la configuration de la base de données.  
+  Cette couche traduit les données entre PostgreSQL et les entités métier.
 
 - **Domaine (src/domain)**  
-  Définit les entités (`Product`, `Sale`, `User`) sans aucune logique DB ou interface.
+  Définit les entités du cœur métier (`Product`, `Sale`) et les interfaces (`IProductRepository`, `ISaleRepository`).  
+  Cette couche ne connaît ni la BD, ni Sequelize, ni les prompts : elle est complètement indépendante.
 
 ---
 
 ## Pourquoi Clean Architecture ?
 
-- Permet de **séparer le code** par responsabilités.
-- Rend le projet **plus clair, testable et maintenable**.
-- Prépare bien les prochains labos (ex : ajout d’API ou changement de DB).
-- J’ai choisi ce modèle pour apprendre autre chose que le classique MVC et structurer mon projet de façon plus pro.
+- Elle permet de séparer le code en couches claires et indépendantes.
+- Elle rend le projet plus testable, maintenable et évolutif.
+- Elle me prépare bien aux prochains labos (ex. : ajout d’une API, changement d’ORM, etc.).
+- J’ai aussi choisi ce modèle pour apprendre une alternative au classique MVC et apprendre à m'adapter à différentes architectures.
 
 ---
 
 ## Persistance
 
-- J’utilise **Sequelize** comme ORM pour manipuler la base plus facilement.
-- Les repositories traduisent les données entre les `models Sequelize` et les entités du domaine.
-- Si on change un jour d’ORM ou de base, seule la couche `infrastructure` sera à modifier.
+- J’utilise **Sequelize** comme ORM pour interagir plus facilement avec PostgreSQL.
+- Les **repositories** convertissent les `models Sequelize` en entités du domaine (`Product`, `Sale`) à l’aide de `new Product(...)`, etc.
+- Si un jour on change d’ORM ou de base de données, **seule la couche `infrastructure` serait impactée**, les autres resteraient inchangées.
