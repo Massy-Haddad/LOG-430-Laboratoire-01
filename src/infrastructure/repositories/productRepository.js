@@ -1,6 +1,6 @@
 import { ProductModel } from '../models/index.js';
 import { Op } from 'sequelize';
-import Product from '../../domain/Product.js';
+import Product from '../../domain/entities/Product.js'
 
 export const productRepository = {
   async findBy(keyword, type) {
