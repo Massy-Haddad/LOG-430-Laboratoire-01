@@ -45,7 +45,9 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t docker.io/${{ secrets.DOCKER_USERNAME }}/laboratoire-0-image:latest .
+        run: |
+          docker build -t docker.io/${{ secrets.DOCKER_USERNAME }}/laboratoire-0-image:latest .
 
       - name: Push image to Docker Hub
-        run: docker push docker.io/${{ secrets.DOCKER_USERNAME }}/laboratoire-0-image:latest
+        run: |
+          docker push docker.io/${{ secrets.DOCKER_USERNAME }}/laboratoire-0-image:latest
