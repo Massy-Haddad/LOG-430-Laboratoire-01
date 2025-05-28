@@ -2,7 +2,11 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import chalk from 'chalk';
 import Table from 'cli-table3';
-import { searchProduct } from '../../usecases/searchProduct.js';
+
+import { makeSearchProductUseCase } from '../../usecases/searchProduct.js'
+import { productRepository } from '../../infrastructure/repositories/productRepository.js'
+
+const searchProductUseCase = makeSearchProductUseCase({ productRepository })
 
 export default async function searchProductCommand() {
   const { searchType } = await inquirer.prompt([
@@ -26,7 +30,10 @@ export default async function searchProductCommand() {
   const spinner = ora('Recherche en cours...').start();
 
   try {
-    const products = await searchProduct(keyword.trim(), searchType.toLowerCase());
+    const products = await searchProductUseCase.searchProduct(
+			keyword.trim(),
+			searchType.toLowerCase()
+		)
     spinner.stop();
 
     if (products.length === 0) {

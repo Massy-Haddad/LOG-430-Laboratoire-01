@@ -1,5 +1,7 @@
-import { productRepository } from '../infrastructure/repositories/productRepository.js';
-
-export async function getAllProducts() {
-  return await productRepository.getAll();
+export function makeCheckStockUseCase({ productRepository }) {
+	return {
+		async getAllProducts() {
+			return await productRepository.getAll()
+		},
+	}
 }

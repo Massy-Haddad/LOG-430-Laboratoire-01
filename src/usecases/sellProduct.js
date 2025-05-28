@@ -1,26 +1,29 @@
-import { productRepository } from '../infrastructure/repositories/productRepository.js';
-import { saleRepository } from '../infrastructure/repositories/saleRepository.js';
+export function makeSellProductUseCase({ productRepository, saleRepository }) {
+	return {
+		async sellProduct(userId, selectedProducts) {
+			for (const item of selectedProducts) {
+				const product = item.product
+				const quantity = item.quantity
 
-export async function getAllProducts() {
-  return await productRepository.getAll();
-}
+				// Logique métier déléguée à l'entité
+				product.reduceStock(quantity)
 
-export async function sellProduct(userId, selectedProducts) {
-  for (const item of selectedProducts) {
-    const product = item.product;
-    const quantity = item.quantity;
+				const total = product.price * quantity
 
-    const total = product.price * quantity;
+				await saleRepository.createSale({
+					userId,
+					productId: product.id,
+					quantity,
+					total,
+					date: new Date(),
+				})
 
-    await saleRepository.createSale({
-      userId,
-      productId: product.id,
-      quantity,
-      total,
-      date: new Date()
-    });
+				await productRepository.update(product)
+			}
+		},
 
-    product.stock -= quantity;
-    await productRepository.updateStock(product.id, product.stock);
-  }
+		async getAllProducts() {
+			return await productRepository.getAll()
+		},
+	}
 }

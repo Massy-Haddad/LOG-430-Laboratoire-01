@@ -12,7 +12,9 @@ export default class Product {
   }
 
   reduceStock(quantity) {
-    if (!this.isInStock(quantity)) throw new Error('Stock insuffisant');
+    if (!this.isInStock(quantity)) {
+			throw new Error('Stock insuffisant')
+		}
     this.stock -= quantity;
   }
 }
