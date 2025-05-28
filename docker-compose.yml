@@ -23,8 +23,8 @@ services:
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app
-    tty: true            # nécessaire pour inquirer
-    stdin_open: true     # nécessaire pour interagir avec la CLI
+    tty: true
+    stdin_open: true
     networks:
       - pos-net
 
