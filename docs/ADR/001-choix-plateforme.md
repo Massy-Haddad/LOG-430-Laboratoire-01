@@ -1,20 +1,40 @@
-# ADR 001 – Choix de la plateforme
-## Décision
-Node.js (version LTS 20.x) comme plateforme principale pour le développement de l’application console.
+# Choix technologiques
 
-## Raisons
-1. **Écosystème CLI puissant** : Node.js a une grande bibliothèque d’outils conçus spécifiquement pour les CLI, comme `commander`, `inquirer`, `chalk`, qui permettent de construire rapidement un UI en ligne de commande.
+## Client (Application console - CLI)
 
-2. **Simplicité d’installation** : Node.js est multiplateforme (Windows, Linux, macOS) et facile à installer. Il est également compatible avec les environnements Docker, ce qui simplifie le déploiement.
+### Langage : Node.js
+  Node.js est rapide, léger et simple à installer. Il permet d'écrire du JavaScript côté serveur. Il est parfait pour créer une application en ligne de commande.
 
-3. **Asynchrone et rapide** : Node.js est bien adapté pour des opérations d’I/O fréquentes, comme l’accès aux fichiers ou aux bases de données.
+### Librairies
+- **commander** : pour gérer les commandes CLI (comme `vente`, `produit`, etc.).
+- **inquirer** : pour poser des questions à l’utilisateur (choix, saisies...).
+- **chalk** : pour colorer le texte dans le terminal.
+- **ora** : pour afficher des animations (spinners) pendant un chargement (requetes asynchrones par exemple).
+- **figlet** : pour ajouter un beau titre ASCII à l’application.
+- **cli-table3** : pour afficher les données (comme le stock) sous forme de tableaux lisibles dans la console.
+- **bcrypt** : pour hasher les mots de passe et sécuriser l’authentification des utilisateurs.
 
-4. **Bonne intégration avec les ORMs** : Des ORM solides comme Sequelize existent pour Node.js, offrant une abstraction efficace de la persistance.
+## Serveur (Base de données et persistance)
 
-5. **Communauté active** : Node.js a une communauté très active et d’un bon écosystème, ce qui facilite la recherche d'outils et de bibliothèques.
+### Base de données - SQLite
+  C'est est une BD simple qui demande pas de serveur. Elle est rapide, légère et stocke les données dans un fichier donc parfaite pour un projet local.
 
-## Bénéfices
+### ORM - Sequelize
+  C'est est une bibliothèque Node.js qui permet de manipuler la base de données avec du JavaScript. Elle supporte bien SQLite et facilite les requêtes en utilisant des objets au lieu de SQL brut.
 
-- L’ensemble de l’application pourra être écrit en JavaScript, facilitant la maintenance.
-- La stack pourra facilement évoluer vers une architecture plus complexe (REST API ou microservices) si besoin.
-- Nécessite une attention à la gestion des erreurs et au typage (JavaScript étant dynamiquement typé).
+### Librairies
+- **pg** : utilisé comme client pour se connecter à PostgreSQL via Sequelize.
+- **dotenv** : pour charger les variables d’environnement depuis un fichier `.env` (utile pour la config DB, mot de passe, etc.).
+
+## DevOps
+
+- **Docker** : pour créer un environnement identique sur toutes les machines.
+- **Docker Compose** : pour lancer l’application avec la base de données ensemble.
+- **GitHub Actions** : pour automatiser le lint, les tests et le déploiement de l’image Docker dans un pipeline CI/CD.
+
+## Pourquoi?
+- Facile à apprendre et à installer.
+- Fonctionne bien sur toutes les plateformes.
+- Bien adapté à un projet local.
+- Bonne communauté et beaucoup de ressources.
+- Facile à déployer et à maintenir.

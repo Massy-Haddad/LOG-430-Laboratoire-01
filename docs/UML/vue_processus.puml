@@ -1,0 +1,32 @@
+@startuml Diagramme de séquence – Enregistrer une vente
+hide footbox
+
+title Diagramme de séquence – Enregistrer une vente
+
+actor Utilisateur as U
+
+participant "CLI (sellProduct.js)" as CLI
+participant "Usecase (processSale)" as Usecase
+participant "saleRepository" as SaleRepo
+participant "productRepository" as ProductRepo
+
+database "PostgreSQL" as DB
+
+U -> CLI : sélectionne produit(s) et quantité
+CLI -> Usecase : processSale(saleInput)
+
+Usecase -> ProductRepo : findById(productId)
+ProductRepo -> DB : SELECT * FROM products WHERE id = ?
+DB --> ProductRepo : Produit
+ProductRepo --> Usecase : Product
+
+Usecase -> ProductRepo : updateStock(productId, newStock)
+ProductRepo -> DB : UPDATE products SET stock = ? WHERE id = ?
+
+Usecase -> SaleRepo : createSale(saleData)
+SaleRepo -> DB : INSERT INTO sales (...)
+
+SaleRepo --> Usecase : Sale
+Usecase --> CLI : retour succès / erreur
+CLI --> U : Affiche confirmation vente
+@enduml

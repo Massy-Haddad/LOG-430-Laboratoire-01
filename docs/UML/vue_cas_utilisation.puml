@@ -1,0 +1,23 @@
+@startuml "Diagramme de cas d'utilisation du système de caisse (POS)" 
+left to right direction
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation du système de caisse (POS)
+
+actor "Utilisateur (Caissier)" as User
+
+rectangle "Système de Caisse" {
+  
+  usecase "Rechercher produit" as UC1
+  usecase "Enregistrer une vente" as UC2
+  usecase "Annuler une vente" as UC3
+  usecase "Consulter le stock" as UC4
+  usecase "Connexion (authentification)" as UC5
+
+  User --> UC5
+  User --> UC1
+  User --> UC2
+  User --> UC3
+  User --> UC4
+}
+@enduml

@@ -1,0 +1,87 @@
+@startuml "Implémentation de l'application POS"
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+left to right direction
+
+title Implémentation de l'application POS
+
+' Présentation
+package "src/cli\n(Presentation)" {
+  [menuPrompt.js]
+  [searchProduct.js] as SP_CLI
+  [sellProduct.js] as S_CLI
+  [returnSale.js] as R_CLI
+  [checkStock.js] as CS_CLI
+  [loginPrompt.js] as LOGIN_CLI
+}
+
+' Usecases
+package "src/usecases\n(Logique Métier)" {
+  [searchProduct.js] as SP_UC
+  [sellProduct.js] as S_UC
+  [returnSale.js] as R_UC
+  [checkStock.js] as CS_UC
+}
+
+' Repositories
+package "src/infrastructure/repositories\n(Persistance)" {
+  [productRepository.js] as PR
+  [saleRepository.js] as SR
+}
+
+' ORM et DB
+package "src/infrastructure/models\n(ORM Models)" {
+  [ProductModel]
+  [SaleModel]
+  [UserModel]
+}
+
+package "src/infrastructure\n(Database)" {
+  [database.js] as DB
+  [Sequelize ORM] <<framework>>
+}
+
+' Domaine
+package "src/domain\n(Entités)" {
+  [Product]
+  [Sale]
+}
+
+' Relations CLI -> Usecases
+SP_CLI --> SP_UC
+S_CLI --> S_UC
+R_CLI --> R_UC
+CS_CLI --> CS_UC
+
+' menuPrompt -> commandes CLI
+[menuPrompt.js] --> SP_CLI
+[menuPrompt.js] --> S_CLI
+[menuPrompt.js] --> R_CLI
+[menuPrompt.js] --> CS_CLI
+LOGIN_CLI --> [menuPrompt.js]
+
+' Login direct vers le modèle utilisateur
+LOGIN_CLI --> UserModel
+
+' Usecases -> Repositories
+SP_UC --> PR
+S_UC --> PR
+S_UC --> SR
+R_UC --> PR
+R_UC --> SR
+CS_UC --> PR
+
+' Repositories -> Models
+PR --> ProductModel
+SR --> SaleModel
+
+' Models -> ORM & DB
+ProductModel --> [Sequelize ORM]
+SaleModel --> [Sequelize ORM]
+UserModel --> [Sequelize ORM]
+[Sequelize ORM] --> DB
+
+' Repositories <-> Domain
+PR --> Product
+SR --> Sale
+@enduml

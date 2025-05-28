@@ -1,0 +1,48 @@
+@startuml "Logique des Entités principales"
+skinparam classAttributeIconSize 0
+
+title Logique des Entités principales
+
+' --- Entités du domaine ---
+class Product {
+  - id: number
+  - name: string
+  - category: string
+  - price: number
+  - stock: number
+}
+
+class Sale {
+  - id: number
+  - userId: number
+  - productId: number
+  - quantity: number
+  - total: number
+  - date: Date
+  - product: Product
+}
+
+' --- Forcer l'affichage horizontal ---
+Product -[hidden]-> Sale
+
+' --- Repositories ---
+class ProductRepository {
+  + findBy(keyword: string, type: string): Product[]
+  + getAll(): Product[]
+  + findById(id: number): Product[]
+  + update(product: Product): void
+  + updateStock(productId: number, newStock: number): void
+}
+
+class SaleRepository {
+  + createSale(saleData): Sale
+  + findByUser(userId: number): Sale[]
+  + findById(saleId: number): Sale
+  + deleteById(saleId: number): void
+}
+
+' --- Relations ---
+ProductRepository --> Product
+SaleRepository --> Sale
+Sale --> Product : contient
+@enduml

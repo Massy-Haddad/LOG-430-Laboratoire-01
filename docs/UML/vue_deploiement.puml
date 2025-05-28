@@ -1,0 +1,25 @@
+@startuml "Diagramme de déploiement de l'application POS"
+skinparam node {
+  BackgroundColor #EEF2F7
+  BorderColor Black
+}
+
+title Diagramme de déploiement de l'application POS
+
+node "VM" {
+  
+  node "Docker Container: Application console - POS (pos_app)" {
+    component "Application Node.js" as App
+    App --> [CLI]
+    App --> [Usecases]
+    App --> [Repositories]
+    App --> [Models]
+  }
+
+  node "Docker Container: PostgreSQL (pos_pg)" {
+    database "PostgreSQL DB" as DB
+  }
+
+  App --> DB : Connexion via l'ORM Sequelize
+}
+@enduml
