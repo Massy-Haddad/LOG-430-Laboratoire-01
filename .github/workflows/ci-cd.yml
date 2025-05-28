@@ -29,21 +29,11 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker containers
-        run: docker compose build
-
-      - name: Start containers
-        run: docker compose up -d
-
-      - name: Wait for DB and app to be ready
-        run: sleep 10
-
-      - name: Run Jest tests
-        run: docker compose exec app npm test
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
 
   build-and-push:
     runs-on: ubuntu-latest
