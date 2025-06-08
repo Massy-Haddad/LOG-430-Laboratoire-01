@@ -1,6 +1,6 @@
 import { SaleModel, ProductModel } from '../models/index.js';
-import Sale from '../../domain/entities/Sale.js'
-import Product from '../../domain/entities/Product.js'
+import Sale from '../../../domain/retail/entities/Sale.js';
+import Product from '../../../domain/retail/entities/Product.js';
 
 export const saleRepository = {  
   async createSale(saleData) {

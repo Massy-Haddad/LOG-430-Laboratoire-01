@@ -3,8 +3,8 @@ import ora from 'ora';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 
-import { makeSearchProductUseCase } from '../../usecases/searchProduct.js'
-import { productRepository } from '../../infrastructure/repositories/productRepository.js'
+import { makeSearchProductUseCase } from '../../usecases/retail/searchProduct.js'
+import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
 
 const searchProductUseCase = makeSearchProductUseCase({ productRepository })
 

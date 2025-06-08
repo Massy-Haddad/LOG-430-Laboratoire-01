@@ -1,9 +1,9 @@
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 import ora from 'ora'
-import { makeReturnSaleUseCase } from '../../usecases/returnSale.js'
-import { saleRepository } from '../../infrastructure/repositories/saleRepository.js'
-import { productRepository } from '../../infrastructure/repositories/productRepository.js'
+import { makeReturnSaleUseCase } from '../../usecases/retail/returnSale.js'
+import { saleRepository } from '../../infrastructure/postgres/repositories/saleRepository.js'
+import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
 
 const returnSaleUseCase = makeReturnSaleUseCase({
 	saleRepository,

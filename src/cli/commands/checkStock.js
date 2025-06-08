@@ -2,8 +2,8 @@ import ora from 'ora';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 
-import { makeCheckStockUseCase } from '../../usecases/checkStock.js'
-import { productRepository } from '../../infrastructure/repositories/productRepository.js'
+import { makeCheckStockUseCase } from '../../usecases/retail/checkStock.js'
+import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
 
 const checkStockUseCase = makeCheckStockUseCase({ productRepository })
 

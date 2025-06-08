@@ -1,8 +1,8 @@
 import figlet from 'figlet';
 import chalk from 'chalk';
 
-import { makeAuthenticateUserUseCase } from '../usecases/authenticateUser.js'
-import { userRepository } from '../infrastructure/repositories/userRepository.js'
+import { makeAuthenticateUserUseCase } from '../usecases/shared/authenticateUser.js'
+import { userRepository } from '../infrastructure/postgres/repositories/userRepository.js'
 import loginPrompt from './loginPrompt.js'
 import menuPrompt from './menuPrompt.js'
 

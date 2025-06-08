@@ -2,9 +2,9 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import chalk from 'chalk';
 
-import { makeSellProductUseCase } from '../../usecases/sellProduct.js'
-import { productRepository } from '../../infrastructure/repositories/productRepository.js'
-import { saleRepository } from '../../infrastructure/repositories/saleRepository.js'
+import { makeSellProductUseCase } from '../../usecases/retail/sellProduct.js'
+import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
+import { saleRepository } from '../../infrastructure/postgres/repositories/saleRepository.js'
 
 // Injection des dépendances
 const sellProductUseCase = makeSellProductUseCase({
