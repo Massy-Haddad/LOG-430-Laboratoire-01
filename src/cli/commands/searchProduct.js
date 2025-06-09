@@ -14,6 +14,7 @@ export default async function searchProductCommand(user) {
 			name: 'searchType',
 			message: '🔍 Rechercher un produit par :',
 			choices: [
+				{ name: 'ID', value: 'id' },
 				{ name: 'Nom', value: 'name' },
 				{ name: 'Catégorie', value: 'category' },
 			],

@@ -1,7 +1,19 @@
-export function makeSearchProductUseCase({ productRepository }) {
+export function makeSearchProductUseCase({ inventoryRepository }) {
 	return {
-		async searchProduct(keyword, type) {
-			return await productRepository.findBy(keyword, type)
+		async searchInStore(storeId, keyword, type) {
+			const inventory = await inventoryRepository.getAllInventoryForStore(
+				storeId
+			)
+
+			return inventory.filter((item) => {
+				const product = item.Product
+				if (type === 'id') {
+					return product.id.toString() === keyword
+				}
+
+				const value = type === 'name' ? product.name : product.category
+				return value.toLowerCase().includes(keyword.toLowerCase())
+			})
 		},
 	}
 }
