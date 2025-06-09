@@ -19,10 +19,10 @@ export default async function loginPrompt(authenticateUserUseCase) {
 
 	try {
 		const user = await authenticateUserUseCase.login(username, password)
-		spinner.succeed('Connexion réussie !')
+		spinner.succeed('Connexion réussie')
 		return user
 	} catch (err) {
-		spinner.fail('Échec de la connexion.')
-		throw new Error('Identifiants invalides.')
+		spinner.fail('Échec de la connexion')
+		throw new Error('Identifiants invalides')
 	}
 }

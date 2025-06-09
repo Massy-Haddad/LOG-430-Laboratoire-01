@@ -2,9 +2,27 @@ import bcrypt from 'bcrypt';
 import chalk from 'chalk';
 
 import { sequelize } from './database.js'
-import { ProductModel, UserModel, SaleModel } from './postgres/models/index.js'
+import {
+	ProductModel,
+	UserModel,
+	SaleModel,
+	StoreModel,
+} from './postgres/models/index.js'
 
-export async function seedUsers() {
+async function seedStores() {
+	await StoreModel.bulkCreate(
+		[
+			{ id: 1, name: 'Magasin Centre-Ville', address: '123 rue Principale' },
+			{ id: 2, name: 'Magasin Quartier-Nord', address: '456 avenue du Nord' },
+			{ id: 3, name: 'Magasin Quartier-Sud', address: '789 boulevard Sud' },
+		],
+		{ ignoreDuplicates: true }
+	)
+
+	console.log(chalk.green('✅ Magasins ajoutés.'))
+}
+
+async function seedUsers() {
 	const hash = await bcrypt.hash('password', 10)
 
 	await UserModel.findOrCreate({
@@ -16,21 +34,47 @@ export async function seedUsers() {
 	})
 
 	await UserModel.findOrCreate({
-		where: { username: 'caissier' },
+		where: { username: 'caissier1' },
 		defaults: {
 			password: hash,
 			role: 'employee',
+			storeId: 1,
+		},
+	})
+
+	await UserModel.findOrCreate({
+		where: { username: 'caissier2' },
+		defaults: {
+			password: hash,
+			role: 'employee',
+			storeId: 2,
+		},
+	})
+
+	await UserModel.findOrCreate({
+		where: { username: 'logistics' },
+		defaults: {
+			password: hash,
+			role: 'logistics',
+		},
+	})
+
+	await UserModel.findOrCreate({
+		where: { username: 'analyst' },
+		defaults: {
+			password: hash,
+			role: 'analyst',
 		},
 	})
 
 	console.log(
 		chalk.green(
-			'✅ Utilisateurs créés : admin / caissier (mot de passe : "password")'
+			'✅ Utilisateurs créés (admin, caissier1, caissier2, logistics, analyst).'
 		)
 	)
 }
 
-export async function seedProducts() {
+async function seedProducts() {
 	await ProductModel.bulkCreate(
 		[
 			// 🍎 Fruits
@@ -85,60 +129,77 @@ export async function seedProducts() {
 }
 
 async function seedSales() {
-  const admin = await UserModel.findOne({ where: { username: 'admin' } });
-  const pomme = await ProductModel.findOne({ where: { name: 'Pomme' } });
-  const lait = await ProductModel.findOne({ where: { name: 'Lait' } });
+	const [caissier1, caissier2] = await Promise.all([
+		UserModel.findOne({ where: { username: 'caissier1' } }),
+		UserModel.findOne({ where: { username: 'caissier2' } }),
+	])
 
-  if (!admin || !pomme || !lait) {
-    console.log(chalk.red('❌ Utilisateur ou produits manquants pour le seed des ventes.'));
-    return;
-  }
+	const pomme = await ProductModel.findOne({ where: { name: 'Pomme' } })
+	const lait = await ProductModel.findOne({ where: { name: 'Lait' } })
+	const pain = await ProductModel.findOne({ where: { name: 'Pain' } })
 
-  await SaleModel.bulkCreate([
-    {
-      userId: admin.id,
-      productId: pomme.id,
-      quantity: 3,
-      total: 3 * pomme.price,
-      date: new Date()
-    },
-    {
-      userId: admin.id,
-      productId: lait.id,
-      quantity: 1,
-      total: 1 * lait.price,
-      date: new Date()
-    }
-  ]);
+	if (!caissier1 || !caissier2 || !pomme || !lait || !pain) {
+		console.log(chalk.red('❌ Données manquantes pour générer les ventes.'))
+		return
+	}
 
-  pomme.stock -= 3;
-  lait.stock -= 1;
-  await pomme.save();
-  await lait.save();
+	const today = new Date('2025-06-09')
 
-  console.log(chalk.green('✅ Ventes de test enregistrées.'));
+	await SaleModel.bulkCreate([
+		{
+			userId: caissier1.id,
+			productId: pomme.id,
+			quantity: 4,
+			total: 4 * pomme.price,
+			storeId: 1,
+			date: today,
+		},
+		{
+			userId: caissier1.id,
+			productId: lait.id,
+			quantity: 2,
+			total: 2 * lait.price,
+			storeId: 1,
+			date: today,
+		},
+		{
+			userId: caissier2.id,
+			productId: pain.id,
+			quantity: 5,
+			total: 5 * pain.price,
+			storeId: 2,
+			date: today,
+		},
+	])
+
+	pomme.stock -= 4
+	lait.stock -= 2
+	pain.stock -= 5
+	await Promise.all([pomme.save(), lait.save(), pain.save()])
+
+	console.log(chalk.green('✅ Ventes enregistrées pour UC1-UC3.'))
 }
 
 export async function seedDatabase() {
-  try {
-    await sequelize.authenticate();
-    console.log(chalk.green('✅ Connexion PostgreSQL réussie !'));
+	try {
+		await sequelize.authenticate()
+		console.log(chalk.green('✅ Connexion PostgreSQL réussie !'))
 
-    await sequelize.sync({ force: false });
-    console.log(chalk.green('✅ Modèles synchronisés avec la base PostgreSQL'));
+		await sequelize.sync({ force: false })
+		console.log(chalk.green('✅ Modèles synchronisés avec la base PostgreSQL'))
 
-    await seedUsers();
-    await seedProducts();
-    await seedSales();
+		await seedStores()
+		await seedUsers()
+		await seedProducts()
+		await seedSales()
 
-    process.exit(0);
-  } catch (error) {
-    console.error(chalk.red(`❌ Erreur lors du seed : ${error.message}`));
-    process.exit(1);
-  }
+		process.exit(0)
+	} catch (error) {
+		console.error(chalk.red(`❌ Erreur lors du seed : ${error.message}`))
+		process.exit(1)
+	}
 }
 
-// Si ce fichier est exécuté directement
 if (process.argv[1].endsWith('seed.js')) {
   await seedDatabase();
 }

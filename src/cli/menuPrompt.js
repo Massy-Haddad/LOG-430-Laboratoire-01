@@ -4,6 +4,8 @@ import searchProductCommand from './commands/searchProduct.js';
 import sellProductCommand from './commands/sellProduct.js';
 import returnSaleCommand from './commands/returnSale.js';
 import checkStockCommand from './commands/checkStock.js';
+import generateReportCommand from './commands/generateReport.js'
+
 
 export default async function menuPrompt(user) {
 	while (true) {
@@ -47,7 +49,7 @@ export default async function menuPrompt(user) {
 				await checkStockCommand()
 				break
 			case 'report':
-				// await generateReportCommand();
+				await generateReportCommand()
 				break
 		}
 	}
