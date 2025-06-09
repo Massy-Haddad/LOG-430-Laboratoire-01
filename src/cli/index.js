@@ -21,6 +21,8 @@ try {
 	const user = await loginPrompt(authenticateUserUseCase)
 	console.log(chalk.green(`\n Bienvenue, ${user.username} !\n`))
 	await menuPrompt(user)
+	console.log(chalk.green('Session terminée. À bientôt !'))
+	process.exit(0)
 } catch (err) {
 	console.error(chalk.red(`❌ ${err.message}`))
 	process.exit(1)

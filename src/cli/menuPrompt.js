@@ -1,14 +1,13 @@
-import inquirer from 'inquirer';
+import inquirer from 'inquirer'
 
-import searchProductCommand from './commands/searchProduct.js';
-import sellProductCommand from './commands/sellProduct.js';
-import returnSaleCommand from './commands/returnSale.js';
-import checkStockCommand from './commands/checkStock.js';
+import searchProductCommand from './commands/searchProduct.js'
+import sellProductCommand from './commands/sellProduct.js'
+import returnSaleCommand from './commands/returnSale.js'
+import checkStockCommand from './commands/checkStock.js'
 import generateReportCommand from './commands/generateReport.js'
-
+import replenishStockCommand from './commands/replenishStock.js'
 
 export default async function menuPrompt(user) {
-
 	while (true) {
 		const choices = []
 
@@ -21,6 +20,7 @@ export default async function menuPrompt(user) {
 				{ name: '🔍 Rechercher un produit', value: 'search' },
 				{ name: '🛒 Enregistrer une vente', value: 'sell' },
 				{ name: '🔁 Gérer un retour', value: 'return' },
+				{ name: '🔄 Réapprovisionner un produit', value: 'replenish' },
 				{ name: '📦 Consulter le stock', value: 'stock' }
 			)
 		}
@@ -48,6 +48,9 @@ export default async function menuPrompt(user) {
 				break
 			case 'stock':
 				await checkStockCommand(user)
+				break
+			case 'replenish':
+				await replenishStockCommand(user)
 				break
 			case 'report':
 				await generateReportCommand()
