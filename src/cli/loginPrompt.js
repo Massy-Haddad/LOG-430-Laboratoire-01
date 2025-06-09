@@ -20,8 +20,6 @@ export default async function loginPrompt(authenticateUserUseCase) {
 	try {
 		const user = await authenticateUserUseCase.login(username, password)
 		spinner.succeed('Connexion réussie')
-		// show string of the user stored in the database
-		console.log(`Store ID: #, ${user.storeId}!`)
 		return user
 	} catch (err) {
 		spinner.fail('Échec de la connexion')

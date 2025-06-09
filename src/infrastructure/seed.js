@@ -10,7 +10,16 @@ import {
 } from './postgres/models/index.js'
 
 async function seedStores() {
-  await StoreModel.bulkCreate(
+	// Centre logistique (storeId: 0)
+	await StoreModel.findOrCreate({
+		where: { id: 0 },
+		defaults: {
+			name: 'Centre logistique',
+			address: 'Entrepôt principal',
+		},
+	})
+
+	await StoreModel.bulkCreate(
 		[
 			{ id: 1, name: 'Magasin Centre-Ville', address: '123 rue Principale' },
 			{ id: 2, name: 'Magasin Quartier-Nord', address: '456 avenue du Nord' },
@@ -19,7 +28,7 @@ async function seedStores() {
 		{ ignoreDuplicates: true }
 	)
 
-  console.log(chalk.green('✅ Magasins ajoutés.'))
+	console.log(chalk.green('✅ Magasins ajoutés.'))
 }
 
 async function seedUsers() {
@@ -141,8 +150,19 @@ async function seedSales() {
   console.log(chalk.green('✅ Ventes de test enregistrées.'))
 }
 
+async function seedLogisticInventory() {
+	const products = await ProductModel.findAll()
+	for (const product of products) {
+		await InventoryModel.findOrCreate({
+			where: { storeId: 0, productId: product.id },
+			defaults: { stock: 200 },
+		})
+	}
+	console.log(chalk.green('✅ Stock logistique (centre) ajouté.'))
+}
+
 export async function seedDatabase() {
-  try {
+	try {
 		await sequelize.authenticate()
 		console.log(chalk.green('✅ Connexion PostgreSQL réussie !'))
 
@@ -153,6 +173,7 @@ export async function seedDatabase() {
 		await seedUsers()
 		await seedProducts()
 		await seedInventory()
+		await seedLogisticInventory()
 		await seedSales()
 
 		process.exit(0)

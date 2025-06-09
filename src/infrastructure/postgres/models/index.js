@@ -37,10 +37,10 @@ StoreModel.belongsToMany(ProductModel, {
 	foreignKey: 'storeId',
 })
 
+InventoryModel.belongsTo(ProductModel, { foreignKey: 'productId' })
+InventoryModel.belongsTo(StoreModel, { foreignKey: 'storeId' })
+
 export { ProductModel, UserModel, SaleModel, StoreModel, InventoryModel }
 
 
 
-// Fixes for associations required by includes
-InventoryModel.belongsTo(ProductModel, { foreignKey: 'productId' });
-InventoryModel.belongsTo(StoreModel, { foreignKey: 'storeId' });

@@ -8,9 +8,7 @@ import generateReportCommand from './commands/generateReport.js'
 
 
 export default async function menuPrompt(user) {
-	console.log(
-		`\n👋 Bienvenue ${user.username} (${user.role}) du magasin #${user.storeId} !\n`
-	)
+
 	while (true) {
 		const choices = []
 
