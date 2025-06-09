@@ -3,11 +3,11 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { makeReturnSaleUseCase } from '../../usecases/retail/returnSale.js'
 import { saleRepository } from '../../infrastructure/postgres/repositories/saleRepository.js'
-import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
+import { inventoryRepository } from '../../infrastructure/postgres/repositories/inventoryRepository.js'
 
 const returnSaleUseCase = makeReturnSaleUseCase({
 	saleRepository,
-	productRepository,
+	inventoryRepository,
 })
 
 export default async function returnSaleCommand(currentUser) {
@@ -50,7 +50,7 @@ export default async function returnSaleCommand(currentUser) {
 		}
 
 		const spinnerCancel = ora('📦 Annulation en cours...').start()
-		await returnSaleUseCase.cancelSale(saleId)
+		await returnSaleUseCase.cancelSale(saleId, currentUser.storeId)
 		spinnerCancel.stop()
 
 		console.log(chalk.green('\n✅ Vente annulée avec succès.'))

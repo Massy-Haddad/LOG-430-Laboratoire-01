@@ -3,54 +3,50 @@ import chalk from 'chalk';
 import Table from 'cli-table3';
 
 import { makeCheckStockUseCase } from '../../usecases/retail/checkStock.js'
-import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
+import { inventoryRepository } from '../../infrastructure/postgres/repositories/inventoryRepository.js'
 
-const checkStockUseCase = makeCheckStockUseCase({ productRepository })
+const checkStockUseCase = makeCheckStockUseCase({ inventoryRepository })
 
-export default async function checkStockCommand() {
-	const spinner = ora('📦 Chargement du stock...').start()
+export default async function checkStockCommand(user) {
+	const spinner = ora('📦 Vérification du stock...').start()
 
 	try {
-		const products = await checkStockUseCase.getAllProducts()
+		const inventory = await checkStockUseCase.getInventoryByStore(user.storeId)
 		spinner.stop()
 
-		if (products.length === 0) {
-			console.log(chalk.yellow('⚠️ Aucun produit en stock.'))
-		} else {
-			console.log(
-				chalk.green(`📦 ${products.length} produit(s) trouvé(s) en stock :\n`)
-			)
-			displayProductsTable(products)
+		if (!inventory.length) {
+			console.log(chalk.yellow('❗ Aucun produit en stock pour ce magasin.'))
+			return
 		}
-	} catch (error) {
-		spinner.stop()
-		console.error(
-			chalk.red(`❌ Erreur lors de la consultation du stock : ${error.message}`)
+
+		const table = new Table({
+			head: [
+				chalk.cyan('Produit'),
+				chalk.cyan('Catégorie'),
+				chalk.cyan('Prix'),
+				chalk.cyan('Stock'),
+			],
+			style: { head: [], border: [] },
+		})
+
+		for (const item of inventory) {
+			const product = item.Product
+			table.push([
+				product.name,
+				product.category,
+				product.price.toFixed(2) + ' $',
+				item.stock,
+			])
+		}
+
+		console.log(
+			chalk.green.bold(
+				`\n🛒 Stock – Magasin ${user.storeId} – ${inventory.length} produits\n`
+			)
 		)
+		console.log(table.toString())
+	} catch (err) {
+		spinner.fail('❌ Échec de la consultation du stock.')
+		console.error(chalk.red(err.message))
 	}
-}
-
-function displayProductsTable(products) {
-  const table = new Table({
-    head: [
-      chalk.blue('ID'),
-      chalk.blue('Nom'),
-      chalk.blue('Catégorie'),
-      chalk.blue('Prix'),
-      chalk.blue('Stock')
-    ],
-    colWidths: [5, 20, 20, 10, 10]
-  });
-
-  products.forEach(product => {
-    table.push([
-      product.id,
-      product.name,
-      product.category,
-      `${product.price.toFixed(2)} $`,
-      product.stock
-    ]);
-  });
-
-  console.log(table.toString());
 }

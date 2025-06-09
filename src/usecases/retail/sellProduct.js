@@ -1,19 +1,26 @@
-export function makeSellProductUseCase({ productRepository, saleRepository }) {
+export function makeSellProductUseCase({
+	productRepository,
+	saleRepository,
+	inventoryRepository,
+}) {
 	return {
-		async sellProduct(userId, selectedProducts) {
-			for (const item of selectedProducts) {
-				const product = item.product
-				const quantity = item.quantity
+		async sellProduct(user, selectedProducts) {
+			for (const product of selectedProducts) {
 
 				// Logique métier déléguée à l'entité
-				product.reduceStock(quantity)
+				await inventoryRepository.decrementStock(
+					user.storeId,
+					product.id,
+					product.quantity
+				)
 
-				const total = product.price * quantity
+				const total = product.price * product.quantity
 
 				await saleRepository.createSale({
-					userId,
+					userId: user.id,
+					storeId: user.storeId,
 					productId: product.id,
-					quantity,
+					quantity: product.quantity,
 					total,
 					date: new Date(),
 				})

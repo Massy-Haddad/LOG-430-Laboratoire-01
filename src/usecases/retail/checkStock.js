@@ -1,7 +1,7 @@
-export function makeCheckStockUseCase({ productRepository }) {
+export function makeCheckStockUseCase({ inventoryRepository }) {
 	return {
-		async getAllProducts() {
-			return await productRepository.getAll()
+		async getInventoryByStore(storeId) {
+			return await inventoryRepository.getAllInventoryForStore(storeId)
 		},
 	}
 }

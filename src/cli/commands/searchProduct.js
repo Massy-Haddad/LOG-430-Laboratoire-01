@@ -1,60 +1,66 @@
-import inquirer from 'inquirer';
-import ora from 'ora';
-import chalk from 'chalk';
-import Table from 'cli-table3';
+import inquirer from 'inquirer'
+import chalk from 'chalk'
+import Table from 'cli-table3'
 
 import { makeSearchProductUseCase } from '../../usecases/retail/searchProduct.js'
-import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
+import { inventoryRepository } from '../../infrastructure/postgres/repositories/inventoryRepository.js'
 
-const searchProductUseCase = makeSearchProductUseCase({ productRepository })
+const searchProductUseCase = makeSearchProductUseCase({ inventoryRepository })
 
-export default async function searchProductCommand() {
-  const { searchType } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'searchType',
-      message: '🔍 Rechercher un produit par :',
-      choices: ['ID', 'Nom', 'Catégorie']
-    }
-  ]);
+export default async function searchProductCommand(user) {
+	const { searchType } = await inquirer.prompt([
+		{
+			type: 'list',
+			name: 'searchType',
+			message: '🔍 Rechercher un produit par :',
+			choices: [
+				{ name: 'Nom', value: 'name' },
+				{ name: 'Catégorie', value: 'category' },
+			],
+		},
+	])
 
-  const { keyword } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'keyword',
-      message: `🔎 Entrez le ${searchType.toLowerCase()} à rechercher :`,
-      validate: input => input.trim() !== '' || 'Ce champ ne peut pas être vide.'
-    }
-  ]);
+	const { keyword } = await inquirer.prompt([
+		{
+			type: 'input',
+			name: 'keyword',
+			message: `🔎 Entrez le ${searchType} à rechercher :`,
+		},
+	])
 
-  const spinner = ora('Recherche en cours...').start();
+	const results = await searchProductUseCase.searchInStore(
+		user.storeId,
+		keyword,
+		searchType
+	)
 
-  try {
-    const products = await searchProductUseCase.searchProduct(
-			keyword.trim(),
-			searchType.toLowerCase()
-		)
-    spinner.stop();
+	if (results.length === 0) {
+		console.log(chalk.red('❌ Aucun produit trouvé.'))
+		return
+	}
 
-    if (products.length === 0) {
-      console.log(chalk.red('❌ Aucun produit trouvé.'));
-      return;
-    }
+	const table = new Table({
+		head: [
+			chalk.cyan('ID'),
+			chalk.cyan('Nom'),
+			chalk.cyan('Catégorie'),
+			chalk.cyan('Prix'),
+			chalk.cyan('Stock'),
+		],
+		style: { head: [], border: [] },
+	})
 
-    const table = new Table({
-      head: ['ID', 'Nom', 'Catégorie', 'Prix', 'Stock'],
-      colWidths: [6, 20, 20, 10, 10]
-    });
+	results.forEach((item) => {
+		const product = item.Product
+		table.push([
+			product.id,
+			product.name,
+			product.category,
+			product.price.toFixed(2) + ' $',
+			item.stock,
+		])
+	})
 
-    products.forEach(p => {
-      table.push([p.id, p.name, p.category, `${p.price.toFixed(2)} $`, p.stock]);
-    });
-
-    console.log(chalk.green(`\n✅ ${products.length} produit(s) trouvé(s) :`));
-    console.log(table.toString());
-    console.log("\n")
-  } catch (error) {
-    spinner.stop();
-    console.error(chalk.red(`❌ Erreur : ${error.message}`));
-  }
+	console.log(chalk.green.bold(`\n📋 Résultats dans Magasin #${user.storeId}`))
+	console.log(table.toString())
 }
