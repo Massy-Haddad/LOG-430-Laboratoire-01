@@ -1,0 +1,22 @@
+@startuml "Processus – Générer le tableau de bord"
+hide footbox
+title Diagramme de séquence – Tableau de bord (Headquarters)
+
+actor Admin
+
+participant "CLI (dashboard.js)" as CLI
+participant "DashboardUsecase" as UC
+participant "SaleRepository" as SaleRepo
+participant "InventoryRepository" as InvRepo
+
+Admin -> CLI : 📈 Générer tableau de bord
+CLI -> UC : getDashboard()
+
+UC -> SaleRepo : getRevenueGroupedByStore()
+UC -> InvRepo : getAll() — pour analyser stock bas/surstock
+UC -> SaleRepo : getDailySalesForWeek()
+
+UC --> CLI : Données agrégées
+CLI --> Admin : Affichage tableau
+
+@enduml

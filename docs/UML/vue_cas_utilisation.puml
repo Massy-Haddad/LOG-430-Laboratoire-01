@@ -1,23 +1,24 @@
-@startuml "Diagramme de cas d'utilisation du système de caisse (POS)" 
+@startuml "Cas d'utilisation – POS multi-magasins"
 left to right direction
-skinparam packageStyle rectangle
-
-title Diagramme de cas d'utilisation du système de caisse (POS)
-
-actor "Utilisateur (Caissier)" as User
+actor "Employé (Caissier)" as Caissier
+actor "Admin (Maison Mère)" as Admin
 
 rectangle "Système de Caisse" {
-  
-  usecase "Rechercher produit" as UC1
-  usecase "Enregistrer une vente" as UC2
-  usecase "Annuler une vente" as UC3
-  usecase "Consulter le stock" as UC4
-  usecase "Connexion (authentification)" as UC5
-
-  User --> UC5
-  User --> UC1
-  User --> UC2
-  User --> UC3
-  User --> UC4
+  usecase "Rechercher un produit"
+  usecase "Enregistrer une vente"
+  usecase "Retourner un produit"
+  usecase "Consulter le stock (local ou logistique)"
+  usecase "Réapprovisionner un produit"
+  usecase "Générer un rapport consolidé"
+  usecase "Afficher le tableau de bord"
 }
+
+Caissier --> "Rechercher un produit"
+Caissier --> "Enregistrer une vente"
+Caissier --> "Retourner un produit"
+Caissier --> "Consulter le stock (local ou logistique)"
+Caissier --> "Réapprovisionner un produit"
+
+Admin --> "Générer un rapport consolidé"
+Admin --> "Afficher le tableau de bord"
 @enduml

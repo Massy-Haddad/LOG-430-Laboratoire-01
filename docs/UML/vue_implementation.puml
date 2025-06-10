@@ -1,87 +1,76 @@
-@startuml "Implémentation de l'application POS"
+@startuml "Vue d'Implémentation – POS multi-magasins (horizontal)"
+top to bottom direction
 skinparam componentStyle rectangle
 skinparam packageStyle rectangle
-left to right direction
+skinparam defaultTextAlignment center
+skinparam shadowing false
 
-title Implémentation de l'application POS
+title Vue d’implémentation – Architecture logicielle du POS
 
-' Présentation
-package "src/cli\n(Presentation)" {
-  [menuPrompt.js]
-  [searchProduct.js] as SP_CLI
-  [sellProduct.js] as S_CLI
-  [returnSale.js] as R_CLI
-  [checkStock.js] as CS_CLI
-  [loginPrompt.js] as LOGIN_CLI
+package "Interface Utilisateur" {
+  component CLI
 }
 
-' Usecases
-package "src/usecases\n(Logique Métier)" {
-  [searchProduct.js] as SP_UC
-  [sellProduct.js] as S_UC
-  [returnSale.js] as R_UC
-  [checkStock.js] as CS_UC
+package "Application Layer" {
+  package "Retail" {
+    component UC_Sell
+    component UC_Return
+    component UC_Search
+    component UC_Stock
+  }
+  package "Logistics" {
+    component UC_Replenish
+  }
+  package "Admin" {
+    component UC_Report
+    component UC_Dashboard
+  }
 }
 
-' Repositories
-package "src/infrastructure/repositories\n(Persistance)" {
-  [productRepository.js] as PR
-  [saleRepository.js] as SR
+package "Infrastructure" {
+  component ProductRepository
+  component SaleRepository
+  component UserRepository
+  component InventoryRepository
+  component StoreRepository
 }
 
-' ORM et DB
-package "src/infrastructure/models\n(ORM Models)" {
-  [ProductModel]
-  [SaleModel]
-  [UserModel]
+package "Domaine Logic" {
+  component Product
+  component Sale
+  component User
+  component Store
+  component Inventory
 }
 
-package "src/infrastructure\n(Database)" {
-  [database.js] as DB
-  [Sequelize ORM] <<framework>>
-}
+CLI --> UC_Sell
+CLI --> UC_Return
+CLI --> UC_Search
+CLI --> UC_Stock
+CLI --> UC_Replenish
+CLI --> UC_Report
+CLI --> UC_Dashboard
 
-' Domaine
-package "src/domain\n(Entités)" {
-  [Product]
-  [Sale]
-}
+UC_Sell --> ProductRepository
+UC_Sell --> SaleRepository
+UC_Sell --> InventoryRepository
 
-' Relations CLI -> Usecases
-SP_CLI --> SP_UC
-S_CLI --> S_UC
-R_CLI --> R_UC
-CS_CLI --> CS_UC
+UC_Return --> SaleRepository
+UC_Return --> InventoryRepository
 
-' menuPrompt -> commandes CLI
-[menuPrompt.js] --> SP_CLI
-[menuPrompt.js] --> S_CLI
-[menuPrompt.js] --> R_CLI
-[menuPrompt.js] --> CS_CLI
-LOGIN_CLI --> [menuPrompt.js]
+UC_Search --> ProductRepository
+UC_Stock --> InventoryRepository
 
-' Login direct vers le modèle utilisateur
-LOGIN_CLI --> UserModel
+UC_Replenish --> InventoryRepository
 
-' Usecases -> Repositories
-SP_UC --> PR
-S_UC --> PR
-S_UC --> SR
-R_UC --> PR
-R_UC --> SR
-CS_UC --> PR
+UC_Report --> SaleRepository
+UC_Dashboard --> SaleRepository
+UC_Dashboard --> InventoryRepository
 
-' Repositories -> Models
-PR --> ProductModel
-SR --> SaleModel
+ProductRepository --> Product
+SaleRepository --> Sale
+UserRepository --> User
+InventoryRepository --> Inventory
+StoreRepository --> Store
 
-' Models -> ORM & DB
-ProductModel --> [Sequelize ORM]
-SaleModel --> [Sequelize ORM]
-UserModel --> [Sequelize ORM]
-[Sequelize ORM] --> DB
-
-' Repositories <-> Domain
-PR --> Product
-SR --> Sale
 @enduml

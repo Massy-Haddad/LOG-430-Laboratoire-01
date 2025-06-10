@@ -1,0 +1,21 @@
+@startuml "Processus – Réapprovisionnement depuis le centre logistique"
+hide footbox
+title Diagramme de séquence – Réapprovisionner un produit (Logistics)
+
+actor Employé
+
+participant "CLI (replenishStock.js)" as CLI
+participant "Usecase (replenishStock)" as UC
+participant "InventoryRepository" as Repo
+
+Employé -> CLI : Choix d’un produit localement en rupture
+CLI -> UC : transferFromLogisticCenter(storeId, productId, qty)
+
+UC -> Repo : getInventoryByStoreAndProduct(0, productId)
+UC -> Repo : getInventoryByStoreAndProduct(storeId, productId)
+UC -> Repo : decrementStock(productId, 0, qty)
+UC -> Repo : incrementStock(productId, storeId, qty)
+
+CLI <-- UC : Confirmation du transfert
+
+@enduml

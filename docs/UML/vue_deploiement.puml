@@ -1,25 +1,42 @@
-@startuml "Diagramme de déploiement de l'application POS"
-skinparam node {
-  BackgroundColor #EEF2F7
-  BorderColor Black
-}
+@startuml "Architecture d'Implémentation Distribuée – Application POS"
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam nodeStyle rectangle
+left to right direction
 
-title Diagramme de déploiement de l'application POS
+title Vue d’implémentation globale – POS multi-magasins
 
-node "VM" {
-  
-  node "Docker Container: Application console - POS (pos_app)" {
-    component "Application Node.js" as App
-    App --> [CLI]
-    App --> [Usecases]
-    App --> [Repositories]
-    App --> [Models]
+'--- Réseau global / entreprise ---
+node "Infrastructure Réseau" {
+
+  '--- VM poste employé (1 par magasin) ---
+  node "VM Ubuntu\nMagasin Centre-Ville" {
+    node "Docker Container\npos_app (CLI Node.js)" as App1
   }
 
-  node "Docker Container: PostgreSQL (pos_pg)" {
-    database "PostgreSQL DB" as DB
+  node "VM Ubuntu\nMagasin Quartier-Nord" {
+    node "Docker Container\npos_app (CLI Node.js)" as App2
   }
 
-  App --> DB : Connexion via l'ORM Sequelize
+  node "VM Ubuntu\nMagasin Quartier-Sud" {
+    node "Docker Container\npos_app (CLI Node.js)" as App3
+  }
+
+  '--- VM centralisée pour Maison Mère ---
+  node "VM Ubuntu\nMaison Mère (Admin)" {
+    node "Docker Container\npos_app (Admin CLI)" as AdminCLI
+  }
+
+  '--- Serveur Central ---
+  node "VM Ubuntu\nBase de données" {
+    node "Docker Container\nPostgreSQL" as PG
+  }
 }
+
+'--- Flèches de communication ---
+App1 --> PG : Connexion Sequelize\n(vente, stock)
+App2 --> PG : Connexion Sequelize
+App3 --> PG : Connexion Sequelize
+AdminCLI --> PG : Connexion Sequelize\n(dashboard, rapports)
+
 @enduml

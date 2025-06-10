@@ -6,6 +6,7 @@ import returnSaleCommand from './commands/returnSale.js'
 import checkStockCommand from './commands/checkStock.js'
 import generateReportCommand from './commands/generateReport.js'
 import replenishStockCommand from './commands/replenishStock.js'
+import dashboardCommand from './commands/dashboard.js'
 
 export default async function menuPrompt(user) {
 	while (true) {
@@ -13,6 +14,7 @@ export default async function menuPrompt(user) {
 
 		if (user.role === 'admin') {
 			choices.push({ name: '📊 Générer un rapport consolidé', value: 'report' })
+			choices.push({ name: '📈 Tableau de bord', value: 'dashboard' })
 		}
 
 		if (user.role === 'employee') {
@@ -54,6 +56,9 @@ export default async function menuPrompt(user) {
 				break
 			case 'report':
 				await generateReportCommand()
+				break
+			case 'dashboard':
+				await dashboardCommand()
 				break
 		}
 	}

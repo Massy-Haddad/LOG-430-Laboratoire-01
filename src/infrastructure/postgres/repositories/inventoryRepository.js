@@ -1,4 +1,4 @@
-import { InventoryModel, ProductModel } from '../models/index.js'
+import { InventoryModel, ProductModel, StoreModel } from '../models/index.js'
 
 export const inventoryRepository = {
 	async getStock(storeId, productId) {
@@ -27,6 +27,12 @@ export const inventoryRepository = {
 			throw new Error('Stock introuvable pour ce magasin/produit.')
 		inventory.stock += quantity
 		await inventory.save()
+	},
+
+	async getAll() {
+		return await InventoryModel.findAll({
+			include: [ProductModel, StoreModel],
+		})
 	},
 
 	async getAllInventoryForStore(storeId) {

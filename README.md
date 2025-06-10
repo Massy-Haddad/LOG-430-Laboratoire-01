@@ -1,62 +1,87 @@
-## Système de Caisse - Application Console
+# 🧾 Système de Caisse Multi-Magasins – Documentation LOG430
 
-### 📦 Description
+Bienvenue dans la documentation du projet universitaire **LOG430 – Architecture Logicielle**. Ce projet consiste à concevoir un système de caisse scalable et modulaire, évoluant d’une architecture simple (2-tier) vers une architecture orientée domaines (DDD léger) en suivant les principes de la Clean Architecture. 📐
 
-Cette application est un système de caisse simple pour un petit magasin avec plusieurs caissiers. Elle permet de :
-- Rechercher des produits
-- Enregistrer une vente
-- Gérer un retour
-- Consulter le stock
-- S'authentifier avec un nom d'utilisateur et mot de passe
+## 📘 Contexte
 
-Le tout fonctionne dans une interface console (CLI) et respecte le design pattern **Clean Architecture** pour assurer une bonne séparation des responsabilités.
+Ce projet s’inscrit dans le cadre des laboratoires 0, 1 et 2 du cours LOG430 :
+
+- **Lab 0** : mise en place de l’infrastructure technique (Docker, CI/CD, versioning).
+- **Lab 1** : conception d’une application client/serveur à deux tiers avec persistance locale.
+- **Lab 2** : refonte vers une architecture multi-magasins orientée domaine, avec vue consolidée HQ, logistique centralisée et CI/CD avancée.
 
 ---
 
-### ▶️ Exécution locale
+## 🧠 Résumé des ADRs
+
+📄 `001-choix-plateforme.md`  
+- Justifie l’adoption de **Node.js**, **PostgreSQL**, et **Docker** pour une solution légère, portable et bien supportée.  
+- L’écosystème JS permet une intégration fluide du CLI et des outils de persistance via Sequelize.
+
+📄 `002-separation-responsabilites.md`  
+- Découpe clair entre présentation (CLI), logique métier (usecases), domaine (entités pures) et infrastructure (accès BD).  
+- Application des principes SOLID et de la Clean Architecture.
+
+📄 `003-architecture.md`  
+- Présente l’évolution vers une architecture orientée domaines (DDD) avec une vision par sous-domaines (Retail, Logistique, HQ).  
+- Transition d’un modèle monolithique à une architecture modulaire, favorisant la scalabilité et la maintenabilité.
+
+---
+
+## 🧩 Diagrammes UML (`docs/UML/`)
+
+| Diagramme                              | Description |
+|----------------------------------------|-------------|
+| `vue_cas_utilisation.puml`          | Cas d’utilisation majeurs du système : vente, retour, consultation, rapports |
+| `vue_logique.puml`                  | Diagramme de classes métier : produits, ventes, utilisateurs |
+| `vue_processus_retail_domain.puml`  | Interactions séquentielles pour la vente en magasin |
+| `vue_processus_logistics_domain.puml`| Réapprovisionnement et communication centre logistique ↔ magasins |
+| `vue_processus_hq_domain.puml`      | Génération de rapports consolidés par la maison mère |
+| `vue_implementation.puml`           | Organisation des modules (CLI, usecases, infrastructure...) |
+| `vue_deploiement.puml`             | Architecture conteneurisée multi-composants (CLI, DB, etc.) |
+
+---
+
+## ▶️ Exécution locale
 
 ```bash
-docker compose up --build -d     # Lance l’environnement complet
-npm run seed                     # Remplit la base de données avec des exemples
-npm run cli                      # Démarre l’application en CLI
+git clone <repo>
+cd <repo>
+
+docker compose up --build -d     # Démarre PostgreSQL + seed
+npm run seed                     # Injecte les données d'exemple
+npm run cli                      # Lance le client console
 ```
 
-### ✅ Tests et Lint
+---
+
+## 🧪 Exécution des tests
 
 ```bash
-npm run lint       # Vérifie le code avec ESLint
-npm run test       # Lance les tests unitaires
+npm run lint       # Vérification du style (ESLint)
+npm run test       # Tests unitaires (Jest)
 ```
 
-### 🛠️ Structure
+Les tests couvrent la logique métier et la persistance (mockée via Sequelize). La CI valide automatiquement chaque push.
 
-- src/cli : Interface console avec inquirer
-- src/usecases : Logique métier (UC) indépendante
-- src/domain : Entités métiers simples (Classes)
-- src/infrastructure :
-  - /models : Modèles Sequelize
-  - /repositories : Accès aux données
-  - /database.js : Connexion Sequelize
+---
 
-### 🚀 CI/CD
+## 🛠️ Technologies utilisées
 
-Une pipeline GitHub Actions :
-- Lint le code
-- Exécute les tests
-- Build l’image Docker
-- Pousse sur Docker Hub automatiquement
+| Couche          | Technologies |
+|-----------------|--------------|
+| **Client CLI**  | Node.js, Inquirer, Commander, Chalk, Figlet |
+| **Domaine**     | Classes JS pures (ES6), Clean Architecture |
+| **Persistance** | PostgreSQL, Sequelize ORM |
+| **CI/CD**       | GitHub Actions (Lint + Test + Build + Docker Push) |
+| **Infrastructure** | Docker, Docker Compose |
 
+---
 
-### 🧪 Technologies
-**Client** (CLI - Node.js) :
-- **commander** : pour gérer les commandes CLI (comme `vente`, `produit`, etc.).
-- **inquirer** : pour poser des questions à l’utilisateur (choix, saisies...).
-- **chalk** : pour colorer le texte dans le terminal.
-- **ora** : pour afficher des animations (spinners) pendant un chargement (requetes asynchrones par exemple).
-- **figlet** : pour ajouter un beau titre ASCII à l’application.
-- **cli-table3** : pour afficher les données (comme le stock) sous forme de tableaux lisibles dans la console.
-- **bcrypt** : pour hasher les mots de passe et sécuriser l’authentification des utilisateurs.
+## 🎓 Objectifs pédagogiques atteints
 
-**Persistance**
-- **Base** de données : PostgreSQL
-- **ORM** : Sequelize
+- ✅ Mise en place d’une infrastructure Docker/CI/CD reproductible (Lab 0)
+- ✅ Application de la Clean Architecture et séparation stricte des responsabilités (Lab 1)
+- ✅ Persistance via ORM avec PostgreSQL + tests automatisés
+- ✅ Structuration et documentation technique (ADR, 4+1 UML)
+- ✅ Évolution vers une architecture multi-domaine avec DDD simplifié (Lab 2)

@@ -1,48 +1,65 @@
 @startuml "Logique des Entités principales"
 skinparam classAttributeIconSize 0
+title Entités du domaine – Attributs + Méthodes
 
-title Logique des Entités principales
+class User {
+  - id
+  - username
+  - password
+  - role
+  - storeId
+  --
+  + isAdmin(): boolean
+  + isEmployee(): boolean
+}
 
-' --- Entités du domaine ---
+class Store {
+  - id
+  - name
+  - address
+  --
+  + getName(): string
+  + getAddress(): string
+}
+
 class Product {
-  - id: number
-  - name: string
-  - category: string
-  - price: number
-  - stock: number
+  - id
+  - name
+  - category
+  - price
+  --
+  + updatePrice(newPrice): void
+  + updateCategory(newCategory): void
+}
+
+class Inventory {
+  - storeId
+  - productId
+  - stock
+  --
+  + decrementStock(qty): void
+  + incrementStock(qty): void
+  + isLowStock(threshold): boolean
 }
 
 class Sale {
-  - id: number
-  - userId: number
-  - productId: number
-  - quantity: number
-  - total: number
-  - date: Date
-  - product: Product
+  - id
+  - userId
+  - productId
+  - storeId
+  - quantity
+  - total
+  - date
+  --
+  + getTotal(): number
+  + isFromStore(storeId): boolean
 }
 
-' --- Forcer l'affichage horizontal ---
-Product -[hidden]-> Sale
+User --> Store
+Sale --> User
+Sale --> Product
+Sale --> Store
+Inventory --> Product
+Inventory --> Store
 
-' --- Repositories ---
-class ProductRepository {
-  + findBy(keyword: string, type: string): Product[]
-  + getAll(): Product[]
-  + findById(id: number): Product[]
-  + update(product: Product): void
-  + updateStock(productId: number, newStock: number): void
-}
-
-class SaleRepository {
-  + createSale(saleData): Sale
-  + findByUser(userId: number): Sale[]
-  + findById(saleId: number): Sale
-  + deleteById(saleId: number): void
-}
-
-' --- Relations ---
-ProductRepository --> Product
-SaleRepository --> Sale
-Sale --> Product : contient
 @enduml

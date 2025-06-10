@@ -26,7 +26,7 @@ StoreModel.hasMany(ProductModel, { foreignKey: 'storeId' })
 ProductModel.belongsTo(StoreModel, { foreignKey: 'storeId' })
 
 StoreModel.hasMany(SaleModel, { foreignKey: 'storeId' })
-SaleModel.belongsTo(StoreModel, { foreignKey: 'storeId' })
+SaleModel.belongsTo(StoreModel, { foreignKey: 'storeId', as: 'store' })
 
 ProductModel.belongsToMany(StoreModel, {
 	through: InventoryModel,

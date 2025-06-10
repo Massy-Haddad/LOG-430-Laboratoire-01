@@ -1,0 +1,24 @@
+@startuml Diagramme de séquence – Enregistrer une vente
+hide footbox
+
+title Diagramme de séquence – Enregistrer une vente (Retail)
+
+actor Utilisateur as U
+
+participant "CLI (sellProduct.js)" as CLI
+participant "Usecase (sellProduct)" as UC
+participant "ProductRepository" as ProductRepo
+participant "InventoryRepository" as InventoryRepo
+participant "SaleRepository" as SaleRepo
+
+U -> CLI : Sélection des produits et quantités
+CLI -> UC : sellProduct(user, produits)
+
+UC -> InventoryRepo : getStock(productId, storeId)
+UC -> ProductRepo : findById(productId)
+UC -> SaleRepo : createSale(saleData)
+UC -> InventoryRepo : decrementStock(productId, storeId, qty)
+
+CLI <-- UC : Résultat
+
+@enduml
