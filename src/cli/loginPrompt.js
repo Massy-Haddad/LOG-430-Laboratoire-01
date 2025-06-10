@@ -1,4 +1,4 @@
-import inquirer from 'inquirer';
+import inquirer from 'inquirer'
 import ora from 'ora'
 
 export default async function loginPrompt(authenticateUserUseCase) {
@@ -21,8 +21,11 @@ export default async function loginPrompt(authenticateUserUseCase) {
 		const user = await authenticateUserUseCase.login(username, password)
 		spinner.succeed('Connexion réussie')
 		return user
-	} catch (err) {
+	} catch (error) {
 		spinner.fail('Échec de la connexion')
-		throw new Error('Identifiants invalides')
+		console.error('Erreur de connexion:', error)
+		throw new Error(
+			`Échec de la connexion : ${error.message || 'Identifiants invalides'}`
+		)
 	}
 }
