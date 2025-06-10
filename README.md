@@ -48,7 +48,7 @@ Ce projet s’inscrit dans le cadre des laboratoires 0, 1 et 2 du cours LOG430 :
 git clone <repo>
 cd <repo>
 
-docker compose up --build -d     # Démarre PostgreSQL + seed
+docker compose up --build -d     # Démarre les conteneurs (PostgreSQL, CLI)
 npm run seed                     # Injecte les données d'exemple
 npm run cli                      # Lance le client console
 ```
