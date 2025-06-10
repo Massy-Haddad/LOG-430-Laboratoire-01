@@ -1,49 +1,67 @@
 import ora from 'ora';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import inquirer from 'inquirer';
 
-import { getAllProducts } from '../../usecases/checkStock.js';
+import { makeCheckStockUseCase } from '../../usecases/retail/checkStock.js';
+import { inventoryRepository } from '../../infrastructure/postgres/repositories/inventoryRepository.js';
 
-export default async function checkStockCommand() {
+const checkStockUseCase = makeCheckStockUseCase({ inventoryRepository });
+
+export default async function checkStockCommand(user) {
+  const { mode } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'mode',
+      message: '🔍 Consulter le stock :',
+      choices: [
+        { name: '📦 Stock du magasin local', value: 'local' },
+        { name: '🏢 Stock du centre logistique', value: 'logistic' }
+      ]
+    }
+  ]);
+
   const spinner = ora('📦 Chargement du stock...').start();
 
   try {
-    const products = await getAllProducts();
+    const inventory = mode === 'local'
+      ? await checkStockUseCase.getInventoryByStore(user.storeId)
+      : await checkStockUseCase.getInventoryFromLogisticCenter();
+
     spinner.stop();
 
-    if (products.length === 0) {
-      console.log(chalk.yellow('⚠️ Aucun produit en stock.'));
-    } else {
-      console.log(chalk.green(`📦 ${products.length} produit(s) trouvé(s) en stock :\n`));
-      displayProductsTable(products);
+    if (!inventory.length) {
+      console.log(chalk.yellow('❗ Aucun produit trouvé.'));
+      return;
     }
-  } catch (error) {
-    spinner.stop();
-    console.error(chalk.red(`❌ Erreur lors de la consultation du stock : ${error.message}`));
+
+    const table = new Table({
+      head: [
+        chalk.cyan('Produit'),
+        chalk.cyan('Catégorie'),
+        chalk.cyan('Prix'),
+        chalk.cyan('Stock')
+      ],
+      style: { head: [], border: [] }
+    });
+
+    for (const item of inventory) {
+      const product = item.Product;
+      table.push([
+        product.name,
+        product.category,
+        product.price.toFixed(2) + ' $',
+        item.stock
+      ]);
+    }
+
+    const label = mode === 'local' ? `Magasin #${user.storeId}` : 'Centre logistique';
+    console.log(chalk.green.bold(`
+🛒 Stock – ${label} – ${inventory.length} produits
+`));
+    console.log(table.toString());
+  } catch (err) {
+    spinner.fail('❌ Erreur lors de la consultation du stock.');
+    console.error(chalk.red(err.message));
   }
-}
-
-function displayProductsTable(products) {
-  const table = new Table({
-    head: [
-      chalk.blue('ID'),
-      chalk.blue('Nom'),
-      chalk.blue('Catégorie'),
-      chalk.blue('Prix'),
-      chalk.blue('Stock')
-    ],
-    colWidths: [5, 20, 20, 10, 10]
-  });
-
-  products.forEach(product => {
-    table.push([
-      product.id,
-      product.name,
-      product.category,
-      `${product.price.toFixed(2)} $`,
-      product.stock
-    ]);
-  });
-
-  console.log(table.toString());
 }

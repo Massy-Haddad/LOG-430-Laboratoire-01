@@ -1,71 +1,93 @@
 import inquirer from 'inquirer';
 import ora from 'ora';
 import chalk from 'chalk';
-import { getAllProducts } from '../../usecases/sellProduct.js';
-import { sellProduct } from '../../usecases/sellProduct.js';
 
-export default async function sellProductCommand(currentUser) {
-  try {
-    const spinner = ora('Chargement des produits...').start();
-    const products = await getAllProducts();
-    spinner.stop();
+import { makeSellProductUseCase } from '../../usecases/retail/sellProduct.js'
+import { productRepository } from '../../infrastructure/postgres/repositories/productRepository.js'
+import { saleRepository } from '../../infrastructure/postgres/repositories/saleRepository.js'
+import { inventoryRepository } from '../../infrastructure/postgres/repositories/inventoryRepository.js'
 
-    if (products.length === 0) {
-      console.log(chalk.red('❌ Aucun produit disponible.'));
-      return;
-    }
+// Injection des dépendances
+const sellProductUseCase = makeSellProductUseCase({
+	productRepository,
+	saleRepository,
+	inventoryRepository,
+})
 
-    const { selectedIds } = await inquirer.prompt([{
-      type: 'checkbox',
-      name: 'selectedIds',
-      message: '🛒 Sélectionnez les produits à vendre :',
-      choices: products.map(p => ({
-        name: `${p.name} (${p.category}) - ${p.price.toFixed(2)} $ [Stock: ${p.stock}]`,
-        value: p.id
-      })),
-      validate: input => input.length > 0 ? true : 'Veuillez sélectionner au moins un produit.'
-    }]);
+export default async function sellProductCommand(user) {
+	const products = await productRepository.getAll()
 
-    const selectedProducts = [];
+	const inventory = await Promise.all(
+		products.map(async (product) => {
+			const stock = await inventoryRepository.getStock(user.storeId, product.id)
+			return { ...product, stock }
+		})
+	)
 
-    for (const id of selectedIds) {
-      const product = products.find(p => p.id === id);
-      const { quantity } = await inquirer.prompt([{
-        type: 'number',
-        name: 'quantity',
-        message: `Quantité pour ${product.name} (stock: ${product.stock}) :`,
-        validate: val => (val > 0 && val <= product.stock) ? true : `Quantité invalide. (1 - ${product.stock})`
-      }]);
+	const productChoices = inventory
+		.filter((p) => p.stock !== null)
+		.map((product) => ({
+			name: `${product.name} (${product.category}) - ${product.price.toFixed(
+				2
+			)} $ [Stock: ${product.stock}]`,
+			value: product,
+		}))
 
-      selectedProducts.push({ product, quantity });
-    }
+	const { selectedProducts } = await inquirer.prompt([
+		{
+			type: 'checkbox',
+			name: 'selectedProducts',
+			message: '🛒 Sélectionnez les produits à vendre :',
+			choices: productChoices,
+			validate: (input) =>
+				input.length > 0 || 'Veuillez sélectionner au moins un produit.',
+		},
+	])
 
-    const total = selectedProducts.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+	for (const product of selectedProducts) {
+		const { quantity } = await inquirer.prompt([
+			{
+				type: 'number',
+				name: 'quantity',
+				message: `Quantité pour ${product.name} (stock: ${product.stock}) :`,
+				validate: (input) =>
+					(input > 0 && input <= product.stock) ||
+					`Veuillez entrer une quantité entre 1 et ${product.stock}`,
+			},
+		])
+		product.quantity = quantity
+	}
 
-    console.log(chalk.cyan('\n🧾 Récapitulatif de la vente :'));
-    selectedProducts.forEach(item => {
-      console.log(`- ${item.product.name} x ${item.quantity} = ${(item.product.price * item.quantity).toFixed(2)} $`);
-    });
-    console.log(chalk.yellow(`\n💰 Total : ${total.toFixed(2)} $`));
+	const total = selectedProducts.reduce(
+		(sum, p) => sum + p.price * p.quantity,
+		0
+	)
 
-    const { confirm } = await inquirer.prompt([{
-      type: 'confirm',
-      name: 'confirm',
-      message: 'Confirmer la vente ?',
-      default: true
-    }]);
+	console.log('🧾 Récapitulatif de la vente :')
+	selectedProducts.forEach((p) => {
+		console.log(
+			`- ${p.name} x ${p.quantity} = ${(p.price * p.quantity).toFixed(2)} $`
+		)
+	})
+	console.log(`
+💰 Total : ${total.toFixed(2)} $`)
 
-    if (!confirm) {
-      console.log(chalk.red('❌ Vente annulée.'));
-      return;
-    }
+	const { confirm } = await inquirer.prompt([
+		{
+			type: 'confirm',
+			name: 'confirm',
+			message: '✔ Confirmer la vente ?',
+		},
+	])
 
-    const spinnerSave = ora('💾 Enregistrement...').start();
-    await sellProduct(currentUser.id, selectedProducts);
-    spinnerSave.stop();
+	if (!confirm) return
 
-    console.log(chalk.green('\n✅ Vente enregistrée avec succès.'));
-  } catch (error) {
-    console.error(chalk.red(`❌ Erreur : ${error.message}`));
-  }
+	const spinner = ora('💾 Enregistrement...').start()
+
+	try {
+		await sellProductUseCase.sellProduct(user, selectedProducts)
+		spinner.succeed('✅ Vente enregistrée avec succès !')
+	} catch (error) {
+		spinner.fail(`❌ Erreur : ${error.message}`)
+	}
 }

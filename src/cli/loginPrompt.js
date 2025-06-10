@@ -1,42 +1,31 @@
-import inquirer from 'inquirer';
-import ora from 'ora';
-import bcrypt from 'bcrypt';
+import inquirer from 'inquirer'
+import ora from 'ora'
 
-import { sequelize } from '../infrastructure/database.js';
-import { defineUserModel } from '../infrastructure/models/user.model.js';
+export default async function loginPrompt(authenticateUserUseCase) {
+	const { username, password } = await inquirer.prompt([
+		{
+			type: 'input',
+			name: 'username',
+			message: 'Nom d’utilisateur :',
+		},
+		{
+			type: 'password',
+			name: 'password',
+			message: 'Mot de passe :',
+		},
+	])
 
-const User = defineUserModel(sequelize);
+	const spinner = ora('🔐 Vérification des identifiants...').start()
 
-export default async function loginPrompt() {
-  const { username, password } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'username',
-      message: 'Nom d’utilisateur :'
-    },
-    {
-      type: 'password',
-      name: 'password',
-      message: 'Mot de passe :'
-    }
-  ]);
-
-  const spinner = ora('🔐 Vérification des identifiants...').start();
-
-  const user = await User.findOne({ where: { username } });
-
-  if (!user) {
-    spinner.fail('Utilisateur introuvable.');
-    throw new Error('Identifiants invalides.');
-  }
-
-  const match = await bcrypt.compare(password, user.password);
-
-  if (!match) {
-    spinner.fail('Mot de passe incorrect.');
-    throw new Error('Identifiants invalides.');
-  }
-
-  spinner.succeed('Connexion réussie !');
-  return user;
+	try {
+		const user = await authenticateUserUseCase.login(username, password)
+		spinner.succeed('Connexion réussie')
+		return user
+	} catch (error) {
+		spinner.fail('Échec de la connexion')
+		console.error('Erreur de connexion:', error)
+		throw new Error(
+			`Échec de la connexion : ${error.message || 'Identifiants invalides'}`
+		)
+	}
 }
