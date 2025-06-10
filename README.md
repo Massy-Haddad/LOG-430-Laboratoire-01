@@ -85,3 +85,4 @@ Les tests couvrent la logique métier et la persistance (mockée via Sequelize).
 - ✅ Persistance via ORM avec PostgreSQL + tests automatisés
 - ✅ Structuration et documentation technique (ADR, 4+1 UML)
 - ✅ Évolution vers une architecture multi-domaine avec DDD simplifié (Lab 2)
+
