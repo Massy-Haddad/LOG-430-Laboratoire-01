@@ -15,3 +15,5 @@ COPY . .
 
 # Définit la variable d’environnement pour permettre les imports ESM et les tests
 ENV NODE_ENV=development
+
+CMD ["npm", "run", "dev"]

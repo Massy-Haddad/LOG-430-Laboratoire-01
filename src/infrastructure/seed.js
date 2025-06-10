@@ -9,6 +9,20 @@ import {
 	InventoryModel,
 } from './postgres/models/index.js'
 
+async function waitForPostgres(retries = 10, delay = 2000) {
+	for (let i = 0; i < retries; i++) {
+		try {
+			await sequelize.authenticate()
+			console.log('✅ PostgreSQL est prêt.')
+			return
+		} catch (err) {
+			console.log(`⏳ Attente de PostgreSQL (${i + 1}/${retries})...`)
+			await new Promise((resolve) => setTimeout(resolve, delay))
+		}
+	}
+	throw new Error('PostgreSQL est inaccessible après plusieurs tentatives.')
+}
+
 async function seedStores() {
 	// Centre logistique (storeId: 0)
 	await StoreModel.findOrCreate({
@@ -32,9 +46,9 @@ async function seedStores() {
 }
 
 async function seedUsers() {
-  const hash = await bcrypt.hash('password', 10)
+	const hash = await bcrypt.hash('password', 10)
 
-  await UserModel.findOrCreate({
+	await UserModel.findOrCreate({
 		where: { username: 'admin' },
 		defaults: { password: hash, role: 'admin' },
 	})
@@ -55,7 +69,7 @@ async function seedUsers() {
 		defaults: { password: hash, role: 'analyst' },
 	})
 
-  console.log(chalk.green('✅ Utilisateurs créés.'))
+	console.log(chalk.green('✅ Utilisateurs créés.'))
 }
 
 async function seedProducts() {
@@ -101,7 +115,7 @@ async function seedInventory() {
 }
 
 async function seedSales() {
-  const caissier1 = await UserModel.findOne({
+	const caissier1 = await UserModel.findOne({
 		where: { username: 'caissier1' },
 	})
 	const caissier2 = await UserModel.findOne({
@@ -110,9 +124,9 @@ async function seedSales() {
 	const lait = await ProductModel.findOne({ where: { name: 'Lait' } })
 	const pain = await ProductModel.findOne({ where: { name: 'Pain' } })
 
-  const today = new Date('2025-06-09')
+	const today = new Date('2025-06-09')
 
-  await SaleModel.bulkCreate([
+	await SaleModel.bulkCreate([
 		{
 			userId: caissier1.id,
 			storeId: caissier1.storeId,
@@ -138,7 +152,7 @@ async function seedSales() {
 		where: { storeId: caissier2.storeId, productId: pain.id },
 	})
 
-  if (inv1) {
+	if (inv1) {
 		inv1.stock -= 2
 		await inv1.save()
 	}
@@ -147,7 +161,7 @@ async function seedSales() {
 		await inv2.save()
 	}
 
-  console.log(chalk.green('✅ Ventes de test enregistrées.'))
+	console.log(chalk.green('✅ Ventes de test enregistrées.'))
 }
 
 async function seedLogisticInventory() {
@@ -163,8 +177,10 @@ async function seedLogisticInventory() {
 
 export async function seedDatabase() {
 	try {
+		await waitForPostgres()
+		console.log(chalk.green('✅ PostgreSQL est prêt.'))
 		await sequelize.authenticate()
-		console.log(chalk.green('✅ Connexion PostgreSQL réussie !'))
+		console.log(chalk.green('✅ Connexion PostgreSQL réussie'))
 
 		await sequelize.sync({ force: false })
 		console.log(chalk.green('✅ Modèles synchronisés avec la base PostgreSQL'))

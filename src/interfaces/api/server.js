@@ -1,14 +1,15 @@
 import express from 'express'
 import cors from 'cors'
+import router from './routes/index.js'
 
 const app = express()
+
 app.use(cors())
 app.use(express.json())
 
-// Routes à venir ici
-app.get('/api/v1/ping', (req, res) => res.send('pong'))
+app.use('/api/v1', router)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`API server running on http://localhost:${PORT}`)
+	console.log(`API server running on http://localhost:${PORT}`)
 })
