@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Multi-Magasins \u2013 LOG430",
+    "version": "1.0.0",
+    "description": "Cette API RESTful permet d'interagir avec un syst\u00e8me multi-magasins conform\u00e9ment au laboratoire 3 du cours LOG430 (Architecture Logicielle).\n\nElle expose quatre cas d\u2019usage principaux (UC1 \u00e0 UC4), en suivant les principes de Clean Architecture, REST et DDD l\u00e9ger.\n\n**Fonctionnalit\u00e9s disponibles :**\n- G\u00e9n\u00e9ration de rapports consolid\u00e9s\n- Consultation de stock par magasin\n- Visualisation de performances globales\n- Mise \u00e0 jour d\u2019un produit existant"
+  },
+  "paths": {
+    "/api/v1/reports/sales": {
+      "get": {
+        "summary": "UC1 \u2013 G\u00e9n\u00e9rer un rapport consolid\u00e9 des ventes",
+        "description": "Permet d\u2019obtenir un r\u00e9sum\u00e9 des ventes pour tous les magasins entre deux dates donn\u00e9es.",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "description": "Date de d\u00e9but (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "description": "Date de fin (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rapport g\u00e9n\u00e9r\u00e9 avec succ\u00e8s",
+            "content": {
+              "application/json": {
+                "example": {
+                  "startDate": "2025-06-01",
+                  "endDate": "2025-06-10",
+                  "summaryByStore": [
+                    {
+                      "storeName": "Magasin Centre-Ville",
+                      "totalSales": 42,
+                      "topProducts": [
+                        {
+                          "name": "Pain",
+                          "quantity": 5,
+                          "price": 1.2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requ\u00eate invalide"
+          },
+          "500": {
+            "description": "Erreur interne"
+          }
+        },
+        "tags": [
+          "hq"
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/stock": {
+      "get": {
+        "summary": "UC2 \u2013 Consulter le stock d\u2019un magasin",
+        "description": "Retourne l\u2019inventaire complet d\u2019un magasin donn\u00e9 via son ID.",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant num\u00e9rique du magasin",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventaire retourn\u00e9 avec succ\u00e8s",
+            "content": {
+              "application/json": {
+                "example": {
+                  "storeId": 1,
+                  "items": [
+                    {
+                      "productId": 4,
+                      "name": "Lait",
+                      "stock": 93,
+                      "threshold": 20
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Identifiant invalide"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": [
+          "retail"
+        ]
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "summary": "UC3 \u2013 Visualiser les performances globales",
+        "description": "Retourne un tableau de bord global contenant :\n- Chiffre d\u2019affaires par magasin\n- Produits en surstock ou en rupture\n- Tendances hebdomadaires des ventes",
+        "responses": {
+          "200": {
+            "description": "Tableau de bord g\u00e9n\u00e9r\u00e9",
+            "content": {
+              "application/json": {
+                "example": {
+                  "revenueByStore": [
+                    {
+                      "storeName": "Magasin A",
+                      "total": 150.0
+                    }
+                  ],
+                  "stockAlerts": {
+                    "lowStock": [],
+                    "overStock": []
+                  },
+                  "weeklyTrends": [
+                    {
+                      "date": "2025-06-10",
+                      "total": 84.0
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": [
+          "hq"
+        ]
+      }
+    },
+    "/api/v1/products/{productId}": {
+      "put": {
+        "summary": "UC4 \u2013 Mettre \u00e0 jour un produit",
+        "description": "Modifie les attributs d\u2019un produit existant : nom, prix, stock, cat\u00e9gorie, etc.",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du produit \u00e0 modifier",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Pomme Golden",
+                "price": 1.6,
+                "stock": 200,
+                "category": "Fruits"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produit mis \u00e0 jour",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "name": "Pomme Golden",
+                  "price": 1.6,
+                  "stock": 200,
+                  "category": "Fruits",
+                  "createdAt": "2025-06-10T12:00:00Z",
+                  "updatedAt": "2025-06-10T12:05:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requ\u00eate invalide"
+          },
+          "404": {
+            "description": "Produit non trouv\u00e9"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": [
+          "retail"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "hq",
+      "description": "Fonctionnalit\u00e9s li\u00e9es \u00e0 la maison m\u00e8re"
+    },
+    {
+      "name": "retail",
+      "description": "Op\u00e9rations li\u00e9es aux magasins"
+    }
+  ]
+}

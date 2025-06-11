@@ -17,9 +17,12 @@ services:
   app:
     build:
       context: .
+    command: sh -c "node src/infrastructure/seed.js && npm run dev"
     container_name: pos_app
     depends_on:
       - db
+    ports:
+      - "3000:3000"
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app

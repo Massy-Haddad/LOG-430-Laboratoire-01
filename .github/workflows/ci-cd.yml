@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ master, labo-01, labo-02 ]
+    branches: [ master, labo-01, labo-02, labo-03 ]
   pull_request:
-    branches: [ master, labo-01, labo-02 ]
+    branches: [ master, labo-01, labo-02, labo-03 ]
 
 jobs:
   lint:
