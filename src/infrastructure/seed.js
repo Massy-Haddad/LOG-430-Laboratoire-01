@@ -17,6 +17,7 @@ async function waitForPostgres(retries = 10, delay = 2000) {
 			return
 		} catch (err) {
 			console.log(`⏳ Attente de PostgreSQL (${i + 1}/${retries})...`)
+			console.log(chalk.red(err.message))
 			await new Promise((resolve) => setTimeout(resolve, delay))
 		}
 	}
