@@ -1,104 +1,115 @@
-# LOG430 - Système de Caisse (POS)
+# LOG430 – Système de caisse multi-magasins (Labo 3)
 
-Ce projet consiste à concevoir un système de caisse scalable et modulaire, évoluant d’une architecture simple (2-tier) vers une architecture orientée domaines (DDD léger) en suivant les principes de la Clean Architecture.
+Ce projet constitue la **suite évolutive** des laboratoires 0 à 3 du cours **LOG430 – Architecture Logicielle** (Été 2025).  
+Il repose sur une architecture **Clean Architecture** avec **DDD léger**, une séparation stricte des couches, et expose depuis le **Labo 3** une **API RESTful** complète.
 
-## 📘 Contexte
+## Structure du projet
 
-Ce projet s’inscrit dans le cadre des laboratoires 0, 1 et 2 du cours LOG430 :
+Le projet est divisé selon les principes de Clean Architecture :
 
-- **Laboratoire 0** [(lien)](https://github.com/Massy-Haddad/LOG-430-Laboratoire-0/releases/tag/Lab-0) : mise en place de l’infrastructure technique (Docker, CI/CD, versioning).
-- **Laboratoire 1** [(lien)](https://github.com/Massy-Haddad/LOG-430-Laboratoire-01/releases/tag/Labo-01) : conception d’une application client/serveur à deux tiers avec persistance locale.
-- **Laboratoire 2** [(lien)](https://github.com/Massy-Haddad/LOG-430-Laboratoire-01/releases/tag/Labo-02) : refonte vers une architecture multi-magasins orientée domaine, avec vue consolidée HQ, logistique centralisée et CI/CD avancée.
-
----
-
-## Résumé des ADRs
-
-`001-choix-plateforme.md`  
-- Justifie l’adoption de **Node.js**, **PostgreSQL**, et **Docker** pour une solution légère, portable et bien supportée.  
-- L’écosystème JS permet une intégration fluide du CLI et des outils de persistance via Sequelize.
-
-`002-separation-responsabilites.md`  
-- Découpe clair entre présentation (CLI), logique métier (usecases), domaine (entités pures) et infrastructure (accès BD).  
-- Application des principes SOLID et de la Clean Architecture.
-
-`003-architecture.md`  
-- Présente l’évolution vers une architecture orientée domaines (DDD) avec une vision par sous-domaines (Retail, Logistique, HQ).  
-- Transition d’un modèle monolithique à une architecture modulaire, favorisant la scalabilité et la maintenabilité.
-
----
-
-## Diagrammes UML (`docs/UML/`)
-
-| Diagramme                              | Description |
-|----------------------------------------|-------------|
-| `vue_cas_utilisation.puml`          | Cas d’utilisation majeurs du système : vente, retour, consultation, rapports |
-| `vue_logique.puml`                  | Diagramme de classes métier : produits, ventes, utilisateurs |
-| `vue_processus_retail_domain.puml`  | Interactions séquentielles pour la vente en magasin |
-| `vue_processus_logistics_domain.puml`| Réapprovisionnement et communication centre logistique ↔ magasins |
-| `vue_processus_hq_domain.puml`      | Génération de rapports consolidés par la maison mère |
-| `vue_implementation.puml`           | Organisation des modules (CLI, usecases, infrastructure...) |
-| `vue_deploiement.puml`             | Architecture conteneurisée multi-composants (CLI, DB, etc.) |
-
----
-
-## ▶️ Exécution locale
-
-```bash
-git clone <repo>
-cd <repo>
-
-docker compose up --build -d     # Démarre les conteneurs (PostgreSQL, CLI)
-npm run seed                     # Injecte les données d'exemple
-npm run cli                      # Lance le client console
+```
+src/
+├── cli/            → Interface ligne de commande (laboratoires 1 et 2)
+├── interfaces/api/ → Interface RESTful (ajoutée au laboratoire 3)
+├── usecases/       → Cas d'utilisation métier
+├── domain/         → Entités et interfaces de repository
+├── infrastructure/ → Implémentations concrètes (BD, Sequelize, etc.)
 ```
 
 ---
 
-## 🧪 Exécution des tests
+## Cas d’utilisation exposés via API REST
+
+| UC  | Méthode | URI                                | Description                                      |
+|-----|---------|-------------------------------------|--------------------------------------------------|
+| UC1 | `GET`   | `/api/v1/reports/sales`            | Génère un rapport consolidé des ventes          |
+| UC2 | `GET`   | `/api/v1/stores/:storeId/stock`    | Consulte l'inventaire d’un magasin              |
+| UC3 | `GET`   | `/api/v1/dashboard`                | Visualise les performances globales             |
+| UC4 | `PUT`   | `/api/v1/products/:productId`      | Met à jour les informations d’un produit        |
+
+---
+
+## Documentation Swagger (OpenAPI)
+
+L’API est entièrement documentée via Swagger :
+
+- 🔗 Accessible depuis le conteneur Docker : [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
+### Exemple d'affichage Swagger :
+
+![Swagger global](docs/API/api-docs-global.jpg)
+
+### Démonstration vidéo
+
+🎥 `docs/API/Demo-SwaggerUI.mp4` — Visualisation interactive des endpoints REST.
+
+---
+
+## 🧱 Décision d'Architecture
+
+Le choix d’ajouter une API RESTful a été formalisé dans l’ADR suivant :
+
+📄 [`docs/ADR/004-API-REST.md`](docs/ADR/004-API-REST.md)
+
+> Cette ADR explique le contexte, les objectifs, et la structure adoptée pour l’interface REST.
+
+---
+
+## ✅ État de conformité (Labo 3)
+
+| Exigence                                | Statut  |
+|-----------------------------------------|---------|
+| Architecture RESTful bien définie       | ✔️       |
+| URI normalisés (ressources, pas de verbes) | ✔️    |
+| Utilisation correcte des méthodes HTTP  | ✔️       |
+| Couche API séparée des usecases         | ✔️       |
+| Inversion de dépendance respectée       | ✔️       |
+| Swagger complet et structuré            | ✔️       |
+| Intégration CI/CD avec Docker           | ✔️       |
+| ADR formalisée                          | ✔️       |
+
+---
+
+## 🚀 Lancer le projet
 
 ```bash
-npm run lint       # Vérification du style (ESLint)
-npm run test       # Tests unitaires (Jest)
+docker compose up --build
 ```
 
-Les tests couvrent la logique métier et la persistance (mockée via Sequelize). La CI valide automatiquement chaque push.
+CLI : `npm run cli` 
+Swagger : http://localhost:3000/api-docs 
 
 ---
 
-## 🛠️ Technologies utilisées
-
-| Couche          | Technologies |
-|-----------------|--------------|
-| **Client CLI**  | Node.js, Inquirer, Commander, Chalk, Figlet |
-| **Domaine**     | Classes JS pures (ES6), Clean Architecture |
-| **Persistance** | PostgreSQL, Sequelize ORM |
-| **CI/CD**       | GitHub Actions (Lint + Test + Build + Docker Push) |
-| **Infrastructure** | Docker, Docker Compose |
 
 ---
 
-## 🎓 Objectifs pédagogiques atteints
+## 🧪 Tests automatisés
 
-- ✅ Mise en place d’une infrastructure Docker/CI/CD reproductible (Lab 0)
-- ✅ Application de la Clean Architecture et séparation stricte des responsabilités (Lab 1)
-- ✅ Persistance via ORM avec PostgreSQL + tests automatisés
-- ✅ Structuration et documentation technique (ADR, 4+1 UML)
-- ✅ Évolution vers une architecture multi-domaine avec DDD simplifié (Lab 2)
+Des tests automatisés (unitaires et d’intégration API) sont inclus avec le framework **Jest**.
 
-## Références
+### Lancer les tests dans l’environnement Docker :
 
-- [Clean Architecture](https://bitloops.com/docs/bitloops-language/learning/software-architecture/clean-architecture)
-- [Domain-Driven Design](https://www.oreilly.com/library/view/domain-driven-design-tackling/9780134434421/)
-- [Building a CLI App with Node.js](https://egmz.medium.com/building-a-cli-with-node-js-in-2024-c278802a3ef5)
-- [Sequelize Documentation](https://sequelize.org/)
-- [Docker Documentation](https://docs.docker.com/)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Node.js Documentation](https://nodejs.org/en/docs/)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+```bash
+npm run test
+```
 
-## Contributeurs
+> Assurez-vous que les conteneurs sont démarrés et que les dépendances sont bien installées.
 
-Ce projet a été réalisé par :
-- **Massy Haddad** - [GitHub](https://github.com/Massy-Haddad)
+---
 
+## ⚙️ Dépendances principales
+
+- **Node.js** 20+
+- **Express.js** – Serveur REST
+- **Sequelize** – ORM pour PostgreSQL
+- **Jest** – Framework de test
+- **Docker / Docker Compose** – Conteneurisation
+- **Swagger UI** – Documentation interactive
+- **ESLint** – Standardisation du code
+
+---
+
+## Auteur
+
+Projet réalisé par **Massy Haddad** dans le cadre du cours LOG430 – École de technologie supérieure (ÉTS), Été 2025.
