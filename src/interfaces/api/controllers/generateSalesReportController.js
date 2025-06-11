@@ -16,7 +16,12 @@ export const generateSalesReportController = async (req, res) => {
     }
 
     const report = await generateSalesReportUseCase.generateReport(from, to)
-    return res.status(200).json(report)
+
+    return res.status(200).json({
+      startDate: from,
+      endDate: to,
+      summaryByStore: report.summaryByStore
+    })
   } catch (error) {
     console.error('Error generating sales report:', error)
     return res.status(500).json({ error: 'Internal Server Error' })

@@ -14,10 +14,19 @@ export const checkStoreStockController = async (req, res) => {
   }
 
   try {
-    const stock = await checkStockUseCase.getInventoryByStore(storeId)
-    return res.status(200).json(stock)
+    const inventory = await checkStockUseCase.getInventoryByStore(storeId)
+
+    return res.status(200).json({
+      storeId,
+      items: inventory.map(item => ({
+        productId: item.Product.id,
+        name: item.Product.name,
+        stock: item.stock,
+        threshold: item.threshold
+      }))
+    })
   } catch (error) {
-    console.error('Error fetching stock:', error)
+    console.error('Error fetching inventory:', error)
     return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
