@@ -156,63 +156,59 @@
     },
     "/api/v1/products/{productId}": {
       "put": {
-        "summary": "UC4 \u2013 Mettre \u00e0 jour un produit",
-        "description": "Modifie les attributs d\u2019un produit existant : nom, prix, stock, cat\u00e9gorie, etc.",
-        "parameters": [
-          {
-            "name": "productId",
-            "in": "path",
-            "required": true,
-            "description": "Identifiant du produit \u00e0 modifier",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "example": {
-                "name": "Pomme Golden",
-                "price": 1.6,
-                "stock": 200,
-                "category": "Fruits"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Produit mis \u00e0 jour",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 1,
-                  "name": "Pomme Golden",
-                  "price": 1.6,
-                  "stock": 200,
-                  "category": "Fruits",
-                  "createdAt": "2025-06-10T12:00:00Z",
-                  "updatedAt": "2025-06-10T12:05:00Z"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Requ\u00eate invalide"
-          },
-          "404": {
-            "description": "Produit non trouv\u00e9"
-          },
-          "500": {
-            "description": "Erreur serveur"
-          }
-        },
-        "tags": [
-          "retail"
-        ]
-      }
+				"summary": "UC4 \u2013 Mettre \u00e0 jour un produit",
+				"description": "Modifie les attributs d\u2019un produit existant : nom, prix, cat\u00e9gorie, etc. Ne pas confondre avec l'inventaire d'un magasin qui contient les quantités en stock.",
+				"parameters": [
+					{
+						"name": "productId",
+						"in": "path",
+						"required": true,
+						"description": "Identifiant du produit \u00e0 modifier",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"example": {
+								"name": "Pomme Golden",
+								"price": 1.6,
+								"category": "Fruits"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Produit mis \u00e0 jour",
+						"content": {
+							"application/json": {
+								"example": {
+									"id": 1,
+									"name": "Pomme Golden",
+									"price": 1.6,
+									"category": "Fruits",
+									"createdAt": "2025-06-10T12:00:00Z",
+									"updatedAt": "2025-06-10T12:05:00Z"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Requ\u00eate invalide"
+					},
+					"404": {
+						"description": "Produit non trouv\u00e9"
+					},
+					"500": {
+						"description": "Erreur serveur"
+					}
+				},
+				"tags": ["retail"]
+			}
     }
   },
   "tags": [

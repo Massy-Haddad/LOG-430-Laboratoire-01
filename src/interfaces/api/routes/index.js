@@ -1,9 +1,15 @@
 
 import express from 'express'
-import { generateSalesReportController } from '../controllers/generateSalesReportController.js'
-import { checkStoreStockController } from '../controllers/checkStoreStockController.js'
-import { dashboardController } from '../controllers/dashboardController.js'
-import { updateProductController } from '../controllers/updateProductController.js'
+
+import {
+	dashboardController,
+	generateSalesReportController,
+} from '../controllers/hqController.js'
+
+import {
+	checkStoreStockController,
+	updateProductController,
+} from '../controllers/retailController.js'
 
 const router = express.Router()
 
