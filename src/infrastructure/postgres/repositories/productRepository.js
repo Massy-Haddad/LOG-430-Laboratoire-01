@@ -31,14 +31,11 @@ export const productRepository = {
 		return row ? new Product(row.dataValues) : null
 	},
 
-	async update(product) {
-		await ProductModel.update(
-			{
-				name: product.name,
-				category: product.category,
-				price: product.price,
-			},
-			{ where: { id: product.id } }
-		)
+	async update(id, updates) {
+		await ProductModel.update(updates, { where: { id } })
+
+		const updatedRow = await ProductModel.findByPk(id)
+
+		return updatedRow ? new Product(updatedRow.dataValues) : null
 	},
 }
