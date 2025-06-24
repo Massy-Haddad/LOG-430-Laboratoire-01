@@ -52,10 +52,28 @@ const updateProductController = makeUpdateProductController({
 	updateProductUseCase,
 })
 
-// Routes
+import { authenticateToken } from '../middlewares/authenticateToken.js'
+
+// SHARED Usecase
+import { makeAuthenticateUserUseCase } from '../../../usecases/shared/authenticateUser.js'
+import { userRepository } from '../../../infrastructure/postgres/repositories/userRepository.js'
+
+// SHARED Controller
+import { makeLoginController } from '../controllers/authController.js'
+
+// Instanciation
+const authenticateUserUseCase = makeAuthenticateUserUseCase({ userRepository })
+const loginController = makeLoginController({ authenticateUserUseCase })
+
 const router = express.Router()
 
-router.get('/dashboard', dashboardController)
+// Routes publiques
+router.post('/auth/login', loginController) // 👈 route publique
+
+router.use(authenticateToken) // 👈 appliquer ensuite aux routes privées
+
+router.get('/dashboard', dashboardController) // ✅ maintenant protégée
+
 router.get('/reports/sales', generateSalesReportController)
 
 router.get('/stores/:storeId/stock', checkStoreStockController)

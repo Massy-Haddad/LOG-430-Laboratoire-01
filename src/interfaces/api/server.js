@@ -12,7 +12,14 @@ const __dirname = path.dirname(__filename)
 
 const app = express()
 
-app.use(cors())
+app.use(
+	cors({
+		origin: ['http://localhost:3000'], // à ajuster selon ton front
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+	})
+)
+
 app.use(express.json())
 
 app.use('/api/v1', router)
