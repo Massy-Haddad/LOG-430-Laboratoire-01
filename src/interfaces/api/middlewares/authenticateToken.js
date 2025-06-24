@@ -1,11 +1,15 @@
-// src/interfaces/api/middlewares/authenticateToken.js
+import jwt from 'jsonwebtoken'
+
 export function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
 
-  if (!token || token !== 'secret-token-123') {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+	if (!token) return res.status(401).json({ error: 'Missing token' })
 
-  next()
+	jwt.verify(token, process.env.JWT_SECRET || 'dev-secret', (err, user) => {
+		if (err) return res.status(403).json({ error: 'Invalid token' })
+
+		req.user = user // Ajoute les infos du user dans la req
+		next()
+	})
 }
