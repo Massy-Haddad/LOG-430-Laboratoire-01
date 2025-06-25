@@ -4,6 +4,8 @@ import router from './routes/index.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
+import { loggerMiddleware } from './middlewares/loggerMiddleware.js'
+import { metricsMiddleware } from './middlewares/metricsMiddleware.js'
 import swaggerUi from 'swagger-ui-express'
 import fs from 'fs'
 import path from 'path'
@@ -31,6 +33,8 @@ const swaggerDocument = JSON.parse(
 )
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use(metricsMiddleware)
+app.use(loggerMiddleware)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

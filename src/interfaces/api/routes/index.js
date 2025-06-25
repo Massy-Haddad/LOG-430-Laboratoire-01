@@ -67,6 +67,12 @@ const loginController = makeLoginController({ authenticateUserUseCase })
 
 const router = express.Router()
 
+// Metrics
+import {
+	metricsEndpoint,
+} from '../middlewares/metricsMiddleware.js'
+router.get('/metrics', metricsEndpoint)
+
 // Routes publiques
 router.post('/auth/login', loginController) // 👈 route publique
 
