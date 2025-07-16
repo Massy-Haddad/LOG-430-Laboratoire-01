@@ -10,6 +10,7 @@ import swaggerUi from 'swagger-ui-express'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { connectRedis } from '../../infrastructure/redis/redisClient.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -26,6 +27,9 @@ app.use(
 
 app.use(express.json())
 
+app.use(metricsMiddleware)
+app.use(loggerMiddleware)
+
 app.use('/api/v1', router)
 
 const swaggerDocument = JSON.parse(
@@ -33,8 +37,9 @@ const swaggerDocument = JSON.parse(
 )
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-app.use(metricsMiddleware)
-app.use(loggerMiddleware)
+
+// Connexion Redis avant de lancer le serveur
+await connectRedis()
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

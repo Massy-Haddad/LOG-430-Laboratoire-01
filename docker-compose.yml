@@ -4,7 +4,7 @@ services:
   app1:
     build:
       context: .
-    command: sh -c 'node src/infrastructure/seed.js && node src/interfaces/api/server.js'
+    command: sh -c 'node src/infrastructure/seed.js && npm run dev'
     container_name: app1
     depends_on:
     - db
@@ -19,7 +19,7 @@ services:
   app2:
     build:
       context: .
-    command: node src/interfaces/api/server.js
+    command: npm run dev
     container_name: app2
     depends_on:
     - db
@@ -34,7 +34,7 @@ services:
   app3:
     build:
       context: .
-    command: node src/interfaces/api/server.js
+    command: npm run dev
     container_name: app3
     depends_on:
     - db

@@ -1,0 +1,37 @@
+config:
+  target: "http://localhost"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 30
+      name: "Montée progressive de la charge"
+  processor: "./processor.cjs"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Connexion et requêtes protégées"
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            username: "admin"
+            password: "password"
+          capture:
+            json: "$.token"
+            as: "token"
+      - get:
+          url: "/api/v1/stores/1/stock"
+      - get:
+          url: "/api/v1/stores/2/stock"
+      - get:
+          url: "/api/v1/stores/3/stock"
+      - get:
+          url: "/api/v1/reports/sales?from=2025-06-01&to=2025-06-30"
+      - put:
+          url: "/api/v1/products/1"
+          json:
+            name: "Pomme Golden"
+            price: 1.5
+            category: "Fruits"
