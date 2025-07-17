@@ -1,0 +1,41 @@
+import { Op } from 'sequelize'
+import { ProductModel } from '../models/index.js'
+import Product from '../../../entities/Product.js'
+
+export const productRepository = {
+	async findBy(keyword, type) {
+		if (type === 'id') {
+			const id = parseInt(keyword, 10)
+			if (isNaN(id)) throw new Error('ID invalide.')
+			return await this.findById(id) // Renvoie un tableau ou []
+		}
+
+		const clause =
+			type === 'nom'
+				? { name: { [Op.iLike]: `%${keyword}%` } }
+				: { category: { [Op.iLike]: `%${keyword}%` } }
+
+		const rows = await ProductModel.findAll({ where: clause })
+		return rows.map((row) => new Product(row.dataValues))
+	},
+
+	async getAll() {
+		const rows = await ProductModel.findAll({
+			order: [['id', 'ASC']],
+		})
+		return rows.map((row) => new Product(row.dataValues))
+	},
+
+	async findById(id) {
+		const row = await ProductModel.findByPk(id)
+		return row ? new Product(row.dataValues) : null
+	},
+
+	async update(id, updates) {
+		await ProductModel.update(updates, { where: { id } })
+
+		const updatedRow = await ProductModel.findByPk(id)
+
+		return updatedRow ? new Product(updatedRow.dataValues) : null
+	},
+}

@@ -16,35 +16,20 @@ services:
     volumes:
     - .:/usr/src/app
     working_dir: /usr/src/app
-  app2:
+  stock-service:
     build:
-      context: .
+      context: ./stock-service
     command: npm run dev
-    container_name: app2
+    container_name: stock-service
     depends_on:
-    - db
-    - redis
-    expose:
-    - '3000'
+      - db
+      - redis
     networks:
-    - pos-net
+      - pos-net
+    ports:
+      - "3010:3000"  # Pour l'exposer localement sur un port différent
     volumes:
-    - .:/usr/src/app
-    working_dir: /usr/src/app
-  app3:
-    build:
-      context: .
-    command: npm run dev
-    container_name: app3
-    depends_on:
-    - db
-    - redis
-    expose:
-    - '3000'
-    networks:
-    - pos-net
-    volumes:
-    - .:/usr/src/app
+      - ./stock-service:/usr/src/app
     working_dir: /usr/src/app
   db:
     container_name: pos_pg
