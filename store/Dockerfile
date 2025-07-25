@@ -1,8 +1,8 @@
 # Utilise l'image officielle Node.js
-FROM node:20
+FROM node:22
 
 # Définit le répertoire de travail
-WORKDIR /usr/src/app
+WORKDIR /src/app
 
 # Copie uniquement les fichiers de dépendances en premier (meilleur cache)
 COPY package*.json ./

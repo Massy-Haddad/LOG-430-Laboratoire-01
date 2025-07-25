@@ -24,12 +24,12 @@ app.use(metricsMiddleware);
 app.use(loggerMiddleware);
 
 // Routes REST
-app.use('/api/v1/stock', router);
+app.use('/api/v1/store', router);
 
-// Redis (si utilisé)
+// Redis
 await connectRedis();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Stock service running at http://localhost:${PORT}`);
+  console.log(`✅ Store service running at http://localhost:${PORT}`);
 });

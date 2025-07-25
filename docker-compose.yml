@@ -16,11 +16,11 @@ services:
     volumes:
     - .:/usr/src/app
     working_dir: /usr/src/app
-  stock-service:
+  store:
     build:
-      context: ./stock-service
+      context: ./store
     command: npm run dev
-    container_name: stock-service
+    container_name: store
     depends_on:
       - db
       - redis
@@ -29,8 +29,8 @@ services:
     ports:
       - "3010:3000"  # Pour l'exposer localement sur un port différent
     volumes:
-      - ./stock-service:/usr/src/app
-    working_dir: /usr/src/app
+      - ./store:/src/app
+    working_dir: /src/app
   db:
     container_name: pos_pg
     environment:
@@ -60,8 +60,7 @@ services:
     container_name: nginx
     depends_on:
     - app1
-    - app2
-    - app3
+    - store
     image: nginx:alpine
     networks:
     - pos-net

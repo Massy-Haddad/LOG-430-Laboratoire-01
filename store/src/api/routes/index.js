@@ -5,6 +5,10 @@ import {
   checkStoreStockController,
   updateProductController
 } from '../controllers/stockController.js';
+import {
+  sellProductController
+} from '../controllers/salesController.js';
+import { generateSalesReportController } from '../controllers/reportsController.js'
 
 // Metrics
 import {
@@ -17,7 +21,13 @@ const router = express.Router();
 router.get('/metrics', metricsEndpoint);
 
 // Récupérer le stock d’un magasin
-router.get('/:storeId', checkStoreStockController);
+router.get('/stock/:storeId', checkStoreStockController);
+
+// Vendre un produit
+router.post('/sales', sellProductController)
+
+// Générer un rapport de ventes
+router.get('/reports/sales', generateSalesReportController);
 
 // Récupérer les informations d’un produit
 // router.get('/products/:productId', getProductController);
