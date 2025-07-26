@@ -27,7 +27,7 @@ services:
     networks:
       - pos-net
     ports:
-      - "3010:3000"  # Pour l'exposer localement sur un port différent
+      - "3000"
     volumes:
       - ./store:/src/app
     working_dir: /src/app
@@ -56,18 +56,18 @@ services:
     - 3001:3000
     volumes:
     - grafana-storage:/var/lib/grafana
-  nginx:
-    container_name: nginx
-    depends_on:
-    - app1
-    - store
-    image: nginx:alpine
-    networks:
-    - pos-net
+  krakend:
+    image: devopsfaith/krakend:2.4
+    container_name: krakend
     ports:
-    - 80:80
+      - "3000:3000"
     volumes:
-    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./gateway/krakend.json:/etc/gateway/krakend.json
+    command: ["run", "-c", "krakend.json"]
+    depends_on:
+      - store
+    networks:
+      - pos-net
   prometheus:
     container_name: prometheus
     image: prom/prometheus
