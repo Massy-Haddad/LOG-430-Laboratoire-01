@@ -15,7 +15,13 @@ services:
       - "3000"
     volumes:
       - ./store:/usr/src/app
-    working_dir: /src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/v1/store/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   db:
     container_name: pos_pg
     environment:
@@ -42,7 +48,7 @@ services:
     volumes:
     - grafana-storage:/var/lib/grafana
   krakend:
-    image: krakend
+    image: devopsfaith/krakend
     container_name: krakend
     volumes:
       - ./krakend/krakend.json:/etc/krakend/krakend.json
@@ -52,7 +58,8 @@ services:
     networks:
       - pos-net
     depends_on:
-      - store
+      store:
+        condition: service_healthy
   prometheus:
     container_name: prometheus
     image: prom/prometheus

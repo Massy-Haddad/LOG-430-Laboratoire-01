@@ -31,7 +31,7 @@
           "host": [
             "http://store:3000"
           ],
-          "url_pattern": "/metrics",
+          "url_pattern": "/api/v1/store/metrics",
           "encoding": "no-op"
         }
       ]
