@@ -48,7 +48,7 @@ services:
     volumes:
     - grafana-storage:/var/lib/grafana
   krakend:
-    image: devopsfaith/krakend
+    image: krakend
     container_name: krakend
     volumes:
       - ./krakend/krakend.json:/etc/krakend/krakend.json
