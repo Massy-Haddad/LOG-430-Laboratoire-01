@@ -5,7 +5,7 @@ services:
     container_name: store
     build:
       context: ./store
-    command: npm run dev
+    command: sh -c 'node src/infrastructure/seed.js && npm run dev'
     depends_on:
       - db
       - redis
