@@ -2,7 +2,7 @@
 FROM node:22
 
 # Définit le répertoire de travail
-WORKDIR /src/app
+WORKDIR /usr/src/app
 
 # Copie uniquement les fichiers de dépendances en premier (meilleur cache)
 COPY package*.json ./

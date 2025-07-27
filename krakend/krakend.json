@@ -1,51 +1,38 @@
 {
-  "$schema": "https://www.krakend.io/schema/v3.json",
   "version": 3,
-  "name": "krakend-gateway",
+  "name": "log430-gateway",
   "port": 3000,
-  "extra_config": {},
+  "timeout": "3000ms",
   "endpoints": [
     {
-      "endpoint": "/api/v1/stock/{storeId}",
+      "endpoint": "/api/v1/store/stock/{storeId}",
       "method": "GET",
       "backend": [
         {
-          "host": ["http://store"],
-          "url_pattern": "/api/v1/stock/{storeId}",
-          "encoding": "json"
+          "host": [
+            "http://store:3000"
+          ],
+          "url_pattern": "/api/v1/store/stock/{storeId}",
+          "encoding": "json",
+          "input_parameters": [
+            {
+              "name": "storeId",
+              "type": "string"
+            }
+          ]
         }
       ]
     },
     {
-      "endpoint": "/api/v1/sales",
-      "method": "POST",
-      "backend": [
-        {
-          "host": ["http://store"],
-          "url_pattern": "/api/v1/sales",
-          "encoding": "json"
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/v1/reports/sales",
+      "endpoint": "/api/v1/store/metrics",
       "method": "GET",
       "backend": [
         {
-          "host": ["http://store"],
-          "url_pattern": "/api/v1/reports/sales",
-          "encoding": "json"
-        }
-      ]
-    },
-    {
-      "endpoint": "/api/v1/products/{productId}",
-      "method": "PUT",
-      "backend": [
-        {
-          "host": ["http://store"],
-          "url_pattern": "/api/v1/products/{productId}",
-          "encoding": "json"
+          "host": [
+            "http://store:3000"
+          ],
+          "url_pattern": "/metrics",
+          "encoding": "no-op"
         }
       ]
     }

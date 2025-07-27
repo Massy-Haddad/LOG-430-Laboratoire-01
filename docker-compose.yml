@@ -1,26 +1,11 @@
 networks:
   pos-net: null
 services:
-  app1:
-    build:
-      context: .
-    command: sh -c 'node src/infrastructure/seed.js && npm run dev'
-    container_name: app1
-    depends_on:
-    - db
-    - redis
-    expose:
-    - '3000'
-    networks:
-    - pos-net
-    volumes:
-    - .:/usr/src/app
-    working_dir: /usr/src/app
   store:
+    container_name: store
     build:
       context: ./store
     command: npm run dev
-    container_name: store
     depends_on:
       - db
       - redis
@@ -29,7 +14,7 @@ services:
     ports:
       - "3000"
     volumes:
-      - ./store:/src/app
+      - ./store:/usr/src/app
     working_dir: /src/app
   db:
     container_name: pos_pg
@@ -57,17 +42,17 @@ services:
     volumes:
     - grafana-storage:/var/lib/grafana
   krakend:
-    image: devopsfaith/krakend:2.4
+    image: krakend
     container_name: krakend
+    volumes:
+      - ./krakend/krakend.json:/etc/krakend/krakend.json
     ports:
       - "3000:3000"
-    volumes:
-      - ./gateway/krakend.json:/etc/gateway/krakend.json
-    command: ["run", "-c", "krakend.json"]
-    depends_on:
-      - store
+    command: ["run", "-c", "/etc/krakend/krakend.json"]
     networks:
       - pos-net
+    depends_on:
+      - store
   prometheus:
     container_name: prometheus
     image: prom/prometheus
@@ -84,7 +69,6 @@ services:
     - pos-net
     ports:
     - 6379:6379
-version: '3.8'
 volumes:
   grafana-storage: null
   pos_data: null
