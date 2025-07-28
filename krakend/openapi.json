@@ -21,8 +21,8 @@
   "paths": {
     "/auth/login": {
       "post": {
-        "summary": "User authentication",
-        "description": "Authenticate user credentials and return a JWT token",
+        "summary": "🔑 Get Authentication Token",
+        "description": "**Step 1:** Use this endpoint to authenticate and get a JWT token.\n\n**Step 2:** Copy the token from the response.\n\n**Step 3:** Click the 'Authorize' button at the top of this page and paste the token.\n\n**Step 4:** Test other endpoints that require authentication.",
         "tags": ["auth"],
         "requestBody": {
           "required": true,
@@ -97,7 +97,8 @@
                     "username": "admin",
                     "role": "admin",
                     "storeId": null
-                  }
+                  },
+                  "_instructions": "✅ Copy the 'token' value above and click the 'Authorize' button at the top of this page to use it for authenticated requests."
                 }
               }
             }
@@ -643,14 +644,24 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Use the format: Bearer {your_token}"
+        "description": "JWT Authorization header using the Bearer scheme. To get a token, use the /auth/login endpoint first. Then paste the token here in the format: Bearer {your_token}"
+      }
+    },
+    "examples": {
+      "LoginRequest": {
+        "summary": "Admin Login",
+        "description": "Use these credentials to get a JWT token, then copy the token and use it in the 'Authorize' button above",
+        "value": {
+          "username": "admin",
+          "password": "password"
+        }
       }
     }
   },
   "tags": [
     {
       "name": "auth",
-      "description": "Authentication endpoints for user login and token management"
+      "description": "🔐 **Authentication Flow:**\n1. Use POST /auth/login to get a JWT token\n2. Copy the token from the response\n3. Click 'Authorize' button and paste the token\n4. Test other endpoints that require authentication"
     },
     {
       "name": "store",
