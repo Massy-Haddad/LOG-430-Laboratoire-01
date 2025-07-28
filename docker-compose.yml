@@ -1,6 +1,36 @@
 networks:
   pos-net: null
 services:
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ./auth-service
+    command: sh -c 'npm run seed && npm run dev'
+    depends_on:
+      - db
+    networks:
+      - pos-net
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./auth-service:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    environment:
+      - DB_NAME=pos_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-key-change-in-production-min-256-bits-long}
+      - JWT_AUDIENCE=${JWT_AUDIENCE:-log430-api}
+      - JWT_ISSUER=${JWT_ISSUER:-log430-auth-service}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-3600}
+      - NODE_ENV=development
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   store:
     container_name: store
     build:
@@ -44,7 +74,7 @@ services:
     networks:
     - pos-net
     ports:
-    - 3001:3000
+    - 3002:3000
     volumes:
     - grafana-storage:/var/lib/grafana
   krakend:
@@ -57,8 +87,12 @@ services:
     command: ["run", "-c", "/etc/krakend/krakend.json"]
     networks:
       - pos-net
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-key-change-in-production-min-256-bits-long}
     depends_on:
       store:
+        condition: service_healthy
+      auth-service:
         condition: service_healthy
   swagger-ui:
     image: swaggerapi/swagger-ui
