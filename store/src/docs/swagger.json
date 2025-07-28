@@ -1,0 +1,274 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Store Service API",
+    "version": "1.0.0",
+    "description": "Microservice gérant les opérations de magasin (stock, ventes, produits)"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1/store",
+      "description": "Store Service via KrakenD Gateway"
+    }
+  ],
+  "paths": {
+    "/api/v1/store/stock/{storeId}": {
+      "get": {
+        "summary": "Consulter le stock d'un magasin",
+        "description": "Retourne l'inventaire complet d'un magasin donné via son ID.",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant numérique du magasin",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventaire retourné avec succès",
+            "content": {
+              "application/json": {
+                "example": {
+                  "storeId": 1,
+                  "items": [
+                    {
+                      "productId": 4,
+                      "name": "Lait",
+                      "stock": 93,
+                      "threshold": 20
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Identifiant invalide"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": ["retail"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/sales": {
+      "post": {
+        "summary": "Enregistrer une vente",
+        "description": "Enregistre une nouvelle vente dans le système",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "storeId": 1,
+                "products": [
+                  {
+                    "productId": 1,
+                    "quantity": 2,
+                    "price": 1.5
+                  }
+                ],
+                "total": 3.0
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vente enregistrée avec succès"
+          },
+          "400": {
+            "description": "Données de vente invalides"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": ["retail"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/reports/sales": {
+      "get": {
+        "summary": "Générer un rapport des ventes",
+        "description": "Obtient un résumé des ventes pour une période donnée",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "description": "Date de début (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "description": "Date de fin (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rapport généré avec succès",
+            "content": {
+              "application/json": {
+                "example": {
+                  "startDate": "2025-06-01",
+                  "endDate": "2025-06-10",
+                  "summaryByStore": [
+                    {
+                      "storeName": "Magasin Centre-Ville",
+                      "totalSales": 42,
+                      "topProducts": [
+                        {
+                          "name": "Pain",
+                          "quantity": 5,
+                          "price": 1.2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramètres invalides"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": ["hq"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/products/{productId}": {
+      "put": {
+        "summary": "Mettre à jour un produit",
+        "description": "Modifie les attributs d'un produit existant",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du produit à modifier",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Pomme Golden",
+                "price": 1.6,
+                "category": "Fruits"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produit mis à jour",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "name": "Pomme Golden",
+                  "price": 1.6,
+                  "category": "Fruits",
+                  "createdAt": "2025-06-10T12:00:00Z",
+                  "updatedAt": "2025-06-10T12:05:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide"
+          },
+          "404": {
+            "description": "Produit non trouvé"
+          },
+          "500": {
+            "description": "Erreur serveur"
+          }
+        },
+        "tags": ["retail"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/metrics": {
+      "get": {
+        "summary": "Métriques du service store",
+        "description": "Retourne les métriques Prometheus du service",
+        "responses": {
+          "200": {
+            "description": "Métriques retournées",
+            "content": {
+              "text/plain": {
+                "example": "# HELP http_requests_total Total number of HTTP requests\n# TYPE http_requests_total counter\nhttp_requests_total{method=\"GET\",status=\"200\"} 123"
+              }
+            }
+          }
+        },
+        "tags": ["monitoring"]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Utilisez le format : Bearer {votre_token}"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "retail",
+      "description": "Opérations liées aux magasins"
+    },
+    {
+      "name": "hq",
+      "description": "Fonctionnalités liées à la maison mère"
+    },
+    {
+      "name": "monitoring",
+      "description": "Métriques et monitoring"
+    }
+  ]
+}

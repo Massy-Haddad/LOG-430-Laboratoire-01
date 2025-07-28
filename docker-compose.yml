@@ -60,6 +60,20 @@ services:
     depends_on:
       store:
         condition: service_healthy
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8080:8080"
+    environment:
+      SWAGGER_JSON: /openapi.json
+    volumes:
+      - ./krakend/openapi.json:/openapi.json:ro
+    networks:
+      - pos-net
+    depends_on:
+      - krakend
+      - store
   prometheus:
     container_name: prometheus
     image: prom/prometheus

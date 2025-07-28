@@ -1,0 +1,542 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LOG430 Gateway API",
+    "version": "1.0.0",
+    "description": "API Gateway for LOG430 Multi-Store System. This API provides access to store operations including stock management, sales processing, and reporting functionality through KrakenD Gateway.",
+    "license": {
+      "name": "MIT"
+    },
+    "contact": {
+      "name": "Massy Haddad",
+      "email": "massy.haddad.1@ens.etsmtl.ca"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server via KrakenD Gateway"
+    }
+  ],
+  "paths": {
+    "/api/v1/store/stock/{storeId}": {
+      "get": {
+        "summary": "Get store stock information",
+        "description": "Retrieves the complete inventory for a specific store including product details, current stock levels, and threshold information",
+        "tags": ["store"],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the store",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store inventory retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "storeId": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "productId": {
+                            "type": "integer",
+                            "example": 4
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Lait"
+                          },
+                          "stock": {
+                            "type": "integer",
+                            "example": 93
+                          },
+                          "threshold": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "storeId": 1,
+                  "items": [
+                    {
+                      "productId": 4,
+                      "name": "Lait",
+                      "stock": 93,
+                      "threshold": 20
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid store ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid store ID format"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Store not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/sales": {
+      "post": {
+        "summary": "Record a new sale",
+        "description": "Records a new sale transaction in the system with product details and quantities",
+        "tags": ["store"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["storeId", "products", "total"],
+                "properties": {
+                  "storeId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "example": 2
+                        },
+                        "price": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 1.5
+                        }
+                      }
+                    }
+                  },
+                  "total": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.0
+                  }
+                }
+              },
+              "example": {
+                "storeId": 1,
+                "products": [
+                  {
+                    "productId": 1,
+                    "quantity": 2,
+                    "price": 1.5
+                  }
+                ],
+                "total": 3.0
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sale recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "saleId": {
+                      "type": "integer",
+                      "example": 12345
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Sale recorded successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sale data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid sale data provided"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/reports/sales": {
+      "get": {
+        "summary": "Generate sales report",
+        "description": "Generates a comprehensive sales report for a specified date range across all stores",
+        "tags": ["reports"],
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "description": "Start date for the report (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-06-01"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "description": "End date for the report (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-06-10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sales report generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "startDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "summaryByStore": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "storeName": {
+                            "type": "string"
+                          },
+                          "totalSales": {
+                            "type": "number"
+                          },
+                          "topProducts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "quantity": {
+                                  "type": "integer"
+                                },
+                                "price": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "startDate": "2025-06-01",
+                  "endDate": "2025-06-10",
+                  "summaryByStore": [
+                    {
+                      "storeName": "Magasin Centre-Ville",
+                      "totalSales": 42,
+                      "topProducts": [
+                        {
+                          "name": "Pain",
+                          "quantity": 5,
+                          "price": 1.2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid date format or range"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/products/{productId}": {
+      "put": {
+        "summary": "Update product information",
+        "description": "Updates the attributes of an existing product such as name, price, and category",
+        "tags": ["store"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the product to update",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Pomme Golden"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 1.6
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Fruits"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Pomme Golden",
+                  "price": 1.6,
+                  "category": "Fruits",
+                  "createdAt": "2025-06-10T12:00:00Z",
+                  "updatedAt": "2025-06-10T12:05:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid product data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Product not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/store/metrics": {
+      "get": {
+        "summary": "Get service metrics",
+        "description": "Returns Prometheus-formatted metrics for monitoring and observability",
+        "tags": ["monitoring"],
+        "responses": {
+          "200": {
+            "description": "Metrics data in Prometheus format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "# HELP http_requests_total Total number of HTTP requests\n# TYPE http_requests_total counter\nhttp_requests_total{method=\"GET\",status=\"200\"} 123"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Use the format: Bearer {your_token}"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "store",
+      "description": "Store operations including stock management and sales"
+    },
+    {
+      "name": "reports",
+      "description": "Reporting and analytics endpoints"
+    },
+    {
+      "name": "monitoring",
+      "description": "Health check and metrics endpoints"
+    }
+  ]
+}

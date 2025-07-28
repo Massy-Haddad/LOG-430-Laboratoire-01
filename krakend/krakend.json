@@ -18,6 +18,50 @@
         }
       ],
       "extra_config": {
+        "documentation/openapi": {
+          "summary": "Get store stock information",
+          "description": "Retrieves the complete inventory for a specific store including product details, current stock levels, and threshold information",
+          "tags": ["store"],
+          "param_definition": [
+            {
+              "name": "storeId",
+              "description": "Unique identifier of the store",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "response_definition": {
+            "200": {
+              "description": "Store inventory retrieved successfully",
+              "content_type": "application/json",
+              "example": {
+                "storeId": 1,
+                "items": [
+                  {
+                    "productId": 4,
+                    "name": "Lait",
+                    "stock": 93,
+                    "threshold": 20
+                  }
+                ]
+              }
+            },
+            "400": {
+              "description": "Invalid store ID",
+              "content_type": "application/json",
+              "example": {
+                "error": "Invalid store ID format"
+              }
+            },
+            "404": {
+              "description": "Store not found",
+              "content_type": "application/json",
+              "example": {
+                "error": "Store not found"
+              }
+            }
+          }
+        },
         "qos/ratelimit/router": {
           "max_rate": 100,
           "capacity": 100
@@ -37,6 +81,46 @@
         }
       ],
       "extra_config": {
+        "documentation/openapi": {
+          "summary": "Record a new sale",
+          "description": "Records a new sale transaction in the system with product details and quantities",
+          "tags": ["store"],
+          "request_definition": [
+            {
+              "content_type": "application/json",
+              "description": "Sale transaction details including store, products, quantities, and total amount",
+              "example": {
+                "storeId": 1,
+                "products": [
+                  {
+                    "productId": 1,
+                    "quantity": 2,
+                    "price": 1.5
+                  }
+                ],
+                "total": 3.0
+              }
+            }
+          ],
+          "response_definition": {
+            "201": {
+              "description": "Sale recorded successfully",
+              "content_type": "application/json",
+              "example": {
+                "status": "success",
+                "saleId": 12345,
+                "message": "Sale recorded successfully"
+              }
+            },
+            "400": {
+              "description": "Invalid sale data",
+              "content_type": "application/json",
+              "example": {
+                "error": "Invalid sale data provided"
+              }
+            }
+          }
+        },
         "qos/ratelimit/router": {
           "max_rate": 50,
           "capacity": 50
@@ -60,6 +144,55 @@
         "endDate"
       ],
       "extra_config": {
+        "documentation/openapi": {
+          "summary": "Generate sales report",
+          "description": "Generates a comprehensive sales report for a specified date range across all stores",
+          "tags": ["reports"],
+          "query_definition": [
+            {
+              "name": "startDate",
+              "description": "Start date for the report (ISO 8601 format)",
+              "required": true,
+              "type": "date"
+            },
+            {
+              "name": "endDate",
+              "description": "End date for the report (ISO 8601 format)",
+              "required": true,
+              "type": "date"
+            }
+          ],
+          "response_definition": {
+            "200": {
+              "description": "Sales report generated successfully",
+              "content_type": "application/json",
+              "example": {
+                "startDate": "2025-06-01",
+                "endDate": "2025-06-10",
+                "summaryByStore": [
+                  {
+                    "storeName": "Magasin Centre-Ville",
+                    "totalSales": 42,
+                    "topProducts": [
+                      {
+                        "name": "Pain",
+                        "quantity": 5,
+                        "price": 1.2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "400": {
+              "description": "Invalid date parameters",
+              "content_type": "application/json",
+              "example": {
+                "error": "Invalid date format or range"
+              }
+            }
+          }
+        },
         "qos/ratelimit/router": {
           "max_rate": 20,
           "capacity": 20
@@ -79,6 +212,58 @@
         }
       ],
       "extra_config": {
+        "documentation/openapi": {
+          "summary": "Update product information",
+          "description": "Updates the attributes of an existing product such as name, price, and category",
+          "tags": ["store"],
+          "param_definition": [
+            {
+              "name": "productId",
+              "description": "Unique identifier of the product to update",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "request_definition": [
+            {
+              "content_type": "application/json",
+              "description": "Product update information",
+              "example": {
+                "name": "Pomme Golden",
+                "price": 1.6,
+                "category": "Fruits"
+              }
+            }
+          ],
+          "response_definition": {
+            "200": {
+              "description": "Product updated successfully",
+              "content_type": "application/json",
+              "example": {
+                "id": 1,
+                "name": "Pomme Golden",
+                "price": 1.6,
+                "category": "Fruits",
+                "createdAt": "2025-06-10T12:00:00Z",
+                "updatedAt": "2025-06-10T12:05:00Z"
+              }
+            },
+            "400": {
+              "description": "Invalid request data",
+              "content_type": "application/json",
+              "example": {
+                "error": "Invalid product data"
+              }
+            },
+            "404": {
+              "description": "Product not found",
+              "content_type": "application/json",
+              "example": {
+                "error": "Product not found"
+              }
+            }
+          }
+        },
         "qos/ratelimit/router": {
           "max_rate": 30,
           "capacity": 30
@@ -98,6 +283,18 @@
         }
       ],
       "extra_config": {
+        "documentation/openapi": {
+          "summary": "Get service metrics",
+          "description": "Returns Prometheus-formatted metrics for monitoring and observability",
+          "tags": ["monitoring"],
+          "response_definition": {
+            "200": {
+              "description": "Metrics data in Prometheus format",
+              "content_type": "text/plain",
+              "example": "# HELP http_requests_total Total number of HTTP requests\n# TYPE http_requests_total counter\nhttp_requests_total{method=\"GET\",status=\"200\"} 123"
+            }
+          }
+        },
         "qos/ratelimit/router": {
           "max_rate": 200,
           "capacity": 200
