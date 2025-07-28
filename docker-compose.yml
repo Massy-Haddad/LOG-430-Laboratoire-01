@@ -1,10 +1,10 @@
 networks:
   pos-net: null
 services:
-  auth-service:
-    container_name: auth-service
+  auth:
+    container_name: auth
     build:
-      context: ./auth-service
+      context: ./auth
     command: sh -c 'npm run seed && npm run dev'
     depends_on:
       - db
@@ -13,7 +13,7 @@ services:
     ports:
       - "3001:3000"
     volumes:
-      - ./auth-service:/usr/src/app
+      - ./auth:/usr/src/app
       - /usr/src/app/node_modules
     working_dir: /usr/src/app
     environment:
@@ -92,7 +92,7 @@ services:
     depends_on:
       store:
         condition: service_healthy
-      auth-service:
+      auth:
         condition: service_healthy
   swagger-ui:
     image: swaggerapi/swagger-ui

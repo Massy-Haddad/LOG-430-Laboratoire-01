@@ -11,7 +11,7 @@
       "backend": [
         {
           "host": [
-            "http://auth-service:3000"
+            "http://auth:3000"
           ],
           "url_pattern": "/auth/login",
           "encoding": "json"

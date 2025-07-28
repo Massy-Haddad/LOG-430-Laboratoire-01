@@ -1,5 +1,5 @@
 {
-  "name": "log430-auth-service",
+  "name": "log430-auth",
   "version": "1.0.0",
   "description": "Authentication service for LOG430 microservices architecture",
   "main": "src/server.js",
