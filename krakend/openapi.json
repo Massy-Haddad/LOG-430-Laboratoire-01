@@ -19,6 +19,128 @@
     }
   ],
   "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "User authentication",
+        "description": "Authenticate user credentials and return a JWT token",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "admin",
+                    "description": "Username for authentication"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password",
+                    "description": "Password for authentication"
+                  }
+                }
+              },
+              "example": {
+                "username": "admin",
+                "password": "password"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT access token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "admin"
+                        },
+                        "role": {
+                          "type": "string",
+                          "example": "admin",
+                          "enum": ["admin", "employee", "logistics", "analyst"]
+                        },
+                        "storeId": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Store ID if user is associated with a specific store"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsInN0b3JlSWQiOm51bGwsImF1ZCI6WyJsb2c0MzAtYXBpIl0sImlzcyI6ImxvZzQzMC1hdXRoLXNlcnZpY2UiLCJleHAiOjE3NTM3NDczNjksImlhdCI6MTc1Mzc0Mzc2OX0.xyz123",
+                  "user": {
+                    "id": 1,
+                    "username": "admin",
+                    "role": "admin",
+                    "storeId": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid username or password"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing or invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Username and password are required"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/store/stock/{storeId}": {
       "get": {
         "summary": "Get store stock information",
@@ -526,6 +648,10 @@
     }
   },
   "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication endpoints for user login and token management"
+    },
     {
       "name": "store",
       "description": "Store operations including stock management and sales"
