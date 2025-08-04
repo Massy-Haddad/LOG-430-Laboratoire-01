@@ -74,23 +74,6 @@
         }
       ],
       "extra_config": {
-        "auth/validator": {
-          "alg": "HS256",
-          "audience": ["log430-api"],
-          "issuer": "log430-auth-service",
-          "roles_key": "role",
-          "roles": ["admin", "employee", "logistics", "analyst"],
-          "jwk_url": "",
-          "cache": true,
-          "cache_duration": 900,
-          "operation_debug": true,
-          "propagate_claims": [
-            ["sub", "X-User-Id"],
-            ["username", "X-User-Name"],
-            ["role", "X-User-Role"],
-            ["storeId", "X-Store-Id"]
-          ]
-        },
         "documentation/openapi": {
           "summary": "Get store stock information",
           "description": "Retrieves the complete inventory for a specific store including product details, current stock levels, and threshold information",
@@ -167,9 +150,8 @@
           "issuer": "log430-auth-service",
           "roles_key": "role",
           "roles": ["admin", "employee"],
-          "jwk_url": "",
-          "cache": true,
-          "cache_duration": 900,
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
           "operation_debug": true,
           "propagate_claims": [
             ["sub", "X-User-Id"],
@@ -254,9 +236,8 @@
           "issuer": "log430-auth-service",
           "roles_key": "role",
           "roles": ["admin", "analyst"],
-          "jwk_url": "",
-          "cache": true,
-          "cache_duration": 900,
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
           "operation_debug": true,
           "propagate_claims": [
             ["sub", "X-User-Id"],
@@ -353,9 +334,8 @@
           "issuer": "log430-auth-service",
           "roles_key": "role",
           "roles": ["admin"],
-          "jwk_url": "",
-          "cache": true,
-          "cache_duration": 900,
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
           "operation_debug": true,
           "propagate_claims": [
             ["sub", "X-User-Id"],
@@ -556,9 +536,8 @@
     "auth/signer": {
       "alg": "HS256",
       "keys_to_sign": ["access_token", "refresh_token"],
-      "jwk_url": "",
-      "cache": true,
-      "cache_duration": 900,
+      "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+      "cache": false,
       "operation_debug": true
     },
     "telemetry/metrics": {
