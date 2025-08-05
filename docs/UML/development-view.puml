@@ -1,0 +1,52 @@
+@startuml Development View - LOG430 Component Architecture
+
+title LOG430 Multi-Store System - Development View (Component Architecture)
+
+package "KrakenD Gateway" {
+  [Gateway Router]
+  [Authentication Middleware]
+  [Rate Limiting]
+  [Load Balancer]
+}
+
+package "Microservices" {
+  
+  package "Auth Service" {
+    [Controllers: Auth]
+    [Routes: Authentication]
+    [Entities: User]
+    [Services: JWT, Password]
+    [Repositories: User]
+    [Models: Auth]
+  }
+  
+  package "Store Service" {
+    [Controllers: Sales, Stock, Reports]
+    [Routes: Store Operations]
+    [Entities: Product, Sale, SalesReport]
+    [Services: Sales, Stock, Report]
+    [Repositories: Product, Sale, Inventory]
+    [Models: Store]
+    [Middleware: Metrics]
+  }
+  
+  package "E-commerce Service" {
+    [Controllers: Cart, Checkout]
+    [Routes: E-commerce]
+    [Entities: Cart, Order]
+    [Services: Cart, Checkout]
+    [Repositories: Cart, Order]
+    [Models: E-commerce]
+  }
+}
+
+package "Shared Infrastructure" {
+  [Database Connection]
+  [Redis Connection]
+  [PostgreSQL Schemas]
+  [Redis Cache]
+  [Prometheus Metrics]
+  [Grafana Dashboard]
+}
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml LOG430 Multi-Store System - Deployment View
+
+title LOG430 Multi-Store System - Physical/Deployment View
+
+actor "Client (User)" as client
+
+node "Frontend" as frontend {
+  component "CLI Application" as webapp
+}
+
+node "API Gateway" as gateway {
+  component "KrakenD Gateway\n(Docker Container)" as krakend
+}
+
+node "Auth Service" as auth_node {
+  component "Authentication Service\n(Node.js/Express)" as auth_service
+}
+
+node "Store Service" as store_node {
+  component "Store Management Service\n(Node.js/Express)" as store_service
+}
+
+node "E-commerce Service" as ecommerce_node {
+  component "E-commerce Service\n(Node.js/Express)" as ecommerce_service
+}
+
+database "PostgreSQL Database" as postgres {
+  component "pos_db" as database
+}
+
+database "Redis Cache" as redis {
+  component "Cache & Sessions" as cache
+}
+
+node "Monitoring" as monitoring {
+  component "Prometheus" as prometheus
+  component "Grafana" as grafana
+}
+
+' Client connections
+client --> frontend
+
+' Frontend to Gateway
+frontend --> gateway : "HTTPS (API calls)"
+
+' Gateway to Services
+gateway --> auth_service : "HTTPS (Authentication)"
+gateway --> store_service : "HTTPS (Store operations)"
+gateway --> ecommerce_service : "HTTPS (E-commerce)"
+
+' Services to Database
+auth_service --> database : "SQL (User data)"
+store_service --> database : "SQL (Store data)"
+ecommerce_service --> database : "SQL (E-commerce data)"
+
+' Services to Cache
+store_service --> cache : "Cache & Events"
+ecommerce_service --> cache : "Cache & Events"
+
+' Monitoring
+store_service --> prometheus : "Metrics (HTTPS API)"
+auth_service --> prometheus : "Metrics (HTTPS API)"
+ecommerce_service --> prometheus : "Metrics (HTTPS API)"
+prometheus --> grafana : "Data Query"
+
+@enduml
+
+@enduml

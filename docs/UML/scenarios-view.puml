@@ -1,0 +1,218 @@
+@startuml Scenarios View - LOG430 Use Cases
+
+!define PRIMARY_COLOR #2E86AB
+!define SECONDARY_COLOR #A23B72
+!define ACCENT_COLOR #F18F01
+!define ADMIN_COLOR #C73E1D
+!define EMPLOYEE_COLOR #28A745
+
+title LOG430 Multi-Store System - Scenarios View (Use Cases)
+
+' Actors
+actor "Store Employee" as employee #EMPLOYEE_COLOR
+actor "Store Manager" as manager #SECONDARY_COLOR
+actor "System Administrator" as admin #ADMIN_COLOR
+actor "Data Analyst" as analyst #ACCENT_COLOR
+actor "Customer" as customer #PRIMARY_COLOR
+actor "System" as system #ACCENT_COLOR
+
+' System Boundary
+package "LOG430 Multi-Store System" {
+  
+  ' Authentication Use Cases
+  package "Authentication & Authorization" as auth_package {
+    usecase "Login to System" as login
+    usecase "Validate JWT Token" as validate_token
+    usecase "Manage User Accounts" as manage_users
+    usecase "Track Login Attempts" as track_logins
+    usecase "Handle Rate Limiting" as rate_limiting
+  }
+  
+  ' Store Operations Use Cases
+  package "Store Operations" as store_package {
+    usecase "Check Product Stock" as check_stock
+    usecase "Sell Product" as sell_product
+    usecase "Process Return" as process_return
+    usecase "Replenish Inventory" as replenish_stock
+    usecase "Search Products" as search_products
+    usecase "Update Product Information" as update_product
+    usecase "View Store Dashboard" as view_dashboard
+  }
+  
+  ' Reporting Use Cases
+  package "Reporting & Analytics" as reporting_package {
+    usecase "Generate Sales Report" as generate_report
+    usecase "View Sales Analytics" as view_analytics
+    usecase "Monitor Store Performance" as monitor_performance
+    usecase "Track Inventory Levels" as track_inventory
+    usecase "Export Data" as export_data
+  }
+  
+  ' E-commerce Use Cases
+  package "E-commerce Operations" as ecommerce_package {
+    usecase "Add Items to Cart" as add_to_cart
+    usecase "View Shopping Cart" as view_cart
+    usecase "Update Cart Items" as update_cart
+    usecase "Checkout Process" as checkout
+    usecase "Manage Cart Sessions" as manage_sessions
+  }
+  
+  ' System Administration Use Cases
+  package "System Administration" as admin_package {
+    usecase "Monitor System Health" as monitor_health
+    usecase "View System Metrics" as view_metrics
+    usecase "Manage API Gateway" as manage_gateway
+    usecase "Configure Services" as configure_services
+    usecase "Handle System Alerts" as handle_alerts
+    usecase "Backup Data" as backup_data
+  }
+  
+  ' Integration Use Cases
+  package "System Integration" as integration_package {
+    usecase "API Gateway Routing" as api_routing
+    usecase "Load Balancing" as load_balancing
+    usecase "Cache Management" as cache_management
+    usecase "Metrics Collection" as collect_metrics
+    usecase "Service Discovery" as service_discovery
+  }
+}
+
+' External Systems
+package "External Systems" {
+  usecase "Database Operations" as db_operations
+  usecase "Cache Operations" as cache_operations
+  usecase "Monitoring Dashboard" as monitoring_dashboard
+  usecase "API Documentation" as api_docs
+}
+
+' Actor-Use Case Relationships
+
+' Store Employee relationships
+employee --> login
+employee --> check_stock
+employee --> sell_product
+employee --> process_return
+employee --> search_products
+employee --> view_dashboard
+
+' Store Manager relationships
+manager --> login
+manager --> replenish_stock
+manager --> update_product
+manager --> view_analytics
+manager --> track_inventory
+manager --> view_dashboard
+manager --> generate_report
+
+' System Administrator relationships
+admin --> login
+admin --> manage_users
+admin --> monitor_health
+admin --> view_metrics
+admin --> manage_gateway
+admin --> configure_services
+admin --> handle_alerts
+admin --> backup_data
+
+' Data Analyst relationships
+analyst --> login
+analyst --> generate_report
+analyst --> view_analytics
+analyst --> monitor_performance
+analyst --> export_data
+
+' Customer relationships
+customer --> add_to_cart
+customer --> view_cart
+customer --> update_cart
+customer --> checkout
+
+' System relationships (automated processes)
+system --> validate_token
+system --> track_logins
+system --> rate_limiting
+system --> manage_sessions
+system --> api_routing
+system --> load_balancing
+system --> cache_management
+system --> collect_metrics
+system --> service_discovery
+
+' Include relationships
+sell_product ..> validate_token : <<include>>
+replenish_stock ..> validate_token : <<include>>
+generate_report ..> validate_token : <<include>>
+update_product ..> validate_token : <<include>>
+process_return ..> validate_token : <<include>>
+view_analytics ..> validate_token : <<include>>
+
+check_stock ..> cache_management : <<include>>
+sell_product ..> db_operations : <<include>>
+replenish_stock ..> db_operations : <<include>>
+generate_report ..> db_operations : <<include>>
+
+api_routing ..> validate_token : <<include>>
+api_routing ..> rate_limiting : <<include>>
+api_routing ..> load_balancing : <<include>>
+
+' Extend relationships
+sell_product <.. collect_metrics : <<extend>>
+replenish_stock <.. collect_metrics : <<extend>>
+login <.. track_logins : <<extend>>
+checkout <.. collect_metrics : <<extend>>
+
+manage_sessions <.. cache_operations : <<extend>>
+add_to_cart <.. cache_operations : <<extend>>
+
+view_metrics <.. monitoring_dashboard : <<extend>>
+monitor_health <.. monitoring_dashboard : <<extend>>
+
+' Dependency relationships
+generate_report ..> view_analytics : <<depends>>
+monitor_performance ..> view_metrics : <<depends>>
+handle_alerts ..> monitor_health : <<depends>>
+
+' Specialization relationships
+manager --|> employee : "is a"
+admin --|> manager : "is a"
+
+' Use Case Scenarios Description
+note top of auth_package : "**Authentication Scenarios:**\n1. Employee login with credentials\n2. JWT token validation for each request\n3. Role-based access control\n4. Rate limiting protection"
+
+note right of store_package : "**Store Operation Scenarios:**\n1. Daily inventory check\n2. Customer purchase transaction\n3. Product return processing\n4. Stock replenishment workflow"
+
+note left of reporting_package : "**Reporting Scenarios:**\n1. Daily sales report generation\n2. Monthly performance analysis\n3. Inventory status monitoring\n4. Cross-store comparison"
+
+note bottom of ecommerce_package : "**E-commerce Scenarios:**\n1. Online shopping cart management\n2. Multi-item checkout process\n3. Session timeout handling\n4. Cart persistence across sessions"
+
+note top of admin_package : "**Administration Scenarios:**\n1. System health monitoring\n2. Performance metrics analysis\n3. Service configuration updates\n4. Alert response procedures"
+
+note right of integration_package : "**Integration Scenarios:**\n1. API request routing through gateway\n2. Load balancing across service instances\n3. Cache hit/miss optimization\n4. Cross-service communication"
+
+' Priority levels
+note as N1
+  **High Priority Use Cases:**
+  - Login to System
+  - Sell Product
+  - Check Product Stock
+  - API Gateway Routing
+  - Validate JWT Token
+end note
+
+note as N2
+  **Medium Priority Use Cases:**
+  - Generate Sales Report
+  - Replenish Inventory
+  - Monitor System Health
+  - Cache Management
+end note
+
+note as N3
+  **Low Priority Use Cases:**
+  - Export Data
+  - Configure Services
+  - API Documentation
+  - Backup Data
+end note
+
+@enduml

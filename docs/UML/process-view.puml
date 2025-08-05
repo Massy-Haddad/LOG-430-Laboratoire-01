@@ -1,0 +1,43 @@
+@startuml process-view
+hide footbox
+actor Client
+participant "KrakenD\n(API Gateway)" as Gateway
+participant "Store-Service\nRoute /sales" as Route
+participant "SalesController" as Controller
+participant "SalesService" as Service
+participant "ProductRepository" as ProductRepo
+participant "InventoryRepository" as InventoryRepo
+participant "SaleRepository" as SaleRepo
+
+Client -> Gateway : POST /api/v1/sales\n{storeId, productId, quantity, token}
+Gateway -> Gateway : Validate JWT
+alt Token valid
+    Gateway -> Route : Forward request
+    Route -> Controller : handle POST /sales
+    Controller -> Service : sellProduct(storeId, productId, quantity, userId)
+    Service -> ProductRepo : getById(productId)
+    alt Product exists
+        Service -> InventoryRepo : getStock(storeId, productId)
+        alt Stock sufficient
+            Service -> SaleRepo : createSale(storeId, productId, quantity, userId)
+            Service -> InventoryRepo : decreaseStock(storeId, productId, quantity)
+            Service --> Controller : Sale created {saleId, productId, quantity}
+            Controller --> Route : 201 Created {saleId, productId, quantity}
+            Route --> Gateway : 201 Created {saleId, productId, quantity}
+            Gateway --> Client : 201 Created {saleId, productId, quantity}
+        else Stock insufficient
+            Service --> Controller : Error "Not enough stock"
+            Controller --> Route : 409 Conflict {"error":"Not enough stock"}
+            Route --> Gateway : 409 Conflict
+            Gateway --> Client : 409 Conflict
+        end
+    else Product not found
+        Service --> Controller : Error "Product not found"
+        Controller --> Route : 404 Not Found {"error":"Product not found"}
+        Route --> Gateway : 404 Not Found
+        Gateway --> Client : 404 Not Found
+    end
+else Token invalid
+    Gateway --> Client : 401 Unauthorized
+end
+@enduml
