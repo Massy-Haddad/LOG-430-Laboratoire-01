@@ -448,6 +448,389 @@
       }
     },
     {
+      "endpoint": "/api/v1/ecommerce/cart",
+      "method": "GET",
+      "backend": [
+        {
+          "host": [
+            "http://ecommerce:3000"
+          ],
+          "url_pattern": "/api/v1/ecommerce/cart",
+          "encoding": "json"
+        }
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "audience": ["log430-api"],
+          "issuer": "log430-auth-service",
+          "roles_key": "role",
+          "roles": ["admin", "employee", "customer"],
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
+          "operation_debug": true,
+          "propagate_claims": [
+            ["sub", "X-User-Id"],
+            ["username", "X-User-Name"],
+            ["role", "X-User-Role"],
+            ["storeId", "X-Store-Id"]
+          ]
+        },
+        "documentation/openapi": {
+          "summary": "Get user shopping cart",
+          "description": "Retrieves the current user's shopping cart with all items, quantities, and total amount",
+          "tags": ["ecommerce"],
+          "response_definition": {
+            "200": {
+              "description": "Cart retrieved successfully",
+              "content_type": "application/json",
+              "example": {
+                "success": true,
+                "data": {
+                  "userId": 1,
+                  "items": [
+                    {
+                      "id": 1,
+                      "productId": 4,
+                      "productName": "Lait",
+                      "quantity": 2,
+                      "price": 1.5,
+                      "total": 3.0
+                    }
+                  ],
+                  "totalItems": 2,
+                  "totalAmount": 3.0
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Invalid or missing JWT token",
+              "content_type": "application/json",
+              "example": {
+                "error": "Unauthorized"
+              }
+            }
+          }
+        },
+        "qos/ratelimit/router": {
+          "max_rate": 100,
+          "capacity": 100
+        }
+      }
+    },
+    {
+      "endpoint": "/api/v1/ecommerce/cart",
+      "method": "POST",
+      "backend": [
+        {
+          "host": [
+            "http://ecommerce:3000"
+          ],
+          "url_pattern": "/api/v1/ecommerce/cart",
+          "encoding": "json"
+        }
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "audience": ["log430-api"],
+          "issuer": "log430-auth-service",
+          "roles_key": "role",
+          "roles": ["admin", "employee", "customer"],
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
+          "operation_debug": true,
+          "propagate_claims": [
+            ["sub", "X-User-Id"],
+            ["username", "X-User-Name"],
+            ["role", "X-User-Role"],
+            ["storeId", "X-Store-Id"]
+          ]
+        },
+        "documentation/openapi": {
+          "summary": "Add item to cart",
+          "description": "Adds a new item to the user's shopping cart or updates quantity if item already exists",
+          "tags": ["ecommerce"],
+          "request_definition": [
+            {
+              "content_type": "application/json",
+              "description": "Product details to add to cart",
+              "example": {
+                "productId": 4,
+                "quantity": 2,
+                "price": 1.5,
+                "productName": "Lait"
+              }
+            }
+          ],
+          "response_definition": {
+            "201": {
+              "description": "Item added to cart successfully",
+              "content_type": "application/json",
+              "example": {
+                "success": true,
+                "message": "Item added to cart",
+                "data": {
+                  "cartItem": {
+                    "id": 1,
+                    "productId": 4,
+                    "productName": "Lait",
+                    "quantity": 2,
+                    "price": 1.5,
+                    "total": 3.0
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid request data",
+              "content_type": "application/json",
+              "example": {
+                "error": "Validation failed",
+                "details": [
+                  {
+                    "field": "productId",
+                    "message": "productId is required"
+                  }
+                ]
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Invalid or missing JWT token",
+              "content_type": "application/json",
+              "example": {
+                "error": "Unauthorized"
+              }
+            }
+          }
+        },
+        "qos/ratelimit/router": {
+          "max_rate": 50,
+          "capacity": 50
+        }
+      }
+    },
+    {
+      "endpoint": "/api/v1/ecommerce/checkout",
+      "method": "POST",
+      "backend": [
+        {
+          "host": [
+            "http://ecommerce:3000"
+          ],
+          "url_pattern": "/api/v1/ecommerce/checkout",
+          "encoding": "json"
+        }
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "audience": ["log430-api"],
+          "issuer": "log430-auth-service",
+          "roles_key": "role",
+          "roles": ["admin", "employee", "customer"],
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
+          "operation_debug": true,
+          "propagate_claims": [
+            ["sub", "X-User-Id"],
+            ["username", "X-User-Name"],
+            ["role", "X-User-Role"],
+            ["storeId", "X-Store-Id"]
+          ]
+        },
+        "documentation/openapi": {
+          "summary": "Process checkout",
+          "description": "Processes the cart checkout, creates an order, and initiates payment",
+          "tags": ["ecommerce"],
+          "request_definition": [
+            {
+              "content_type": "application/json",
+              "description": "Checkout information including payment method and shipping details",
+              "example": {
+                "paymentMethod": "card",
+                "shippingAddress": {
+                  "street": "123 Main St",
+                  "city": "Montreal",
+                  "postalCode": "H1A 1A1",
+                  "country": "Canada",
+                  "state": "QC"
+                },
+                "notes": "Leave at front door"
+              }
+            }
+          ],
+          "response_definition": {
+            "201": {
+              "description": "Checkout processed successfully",
+              "content_type": "application/json",
+              "example": {
+                "success": true,
+                "message": "Order created successfully",
+                "data": {
+                  "order": {
+                    "id": 1,
+                    "orderNumber": "ORD-2025-001",
+                    "status": "pending",
+                    "totalAmount": 15.50,
+                    "paymentMethod": "card",
+                    "createdAt": "2025-01-01T12:00:00Z"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid checkout data or empty cart",
+              "content_type": "application/json",
+              "example": {
+                "error": "Cart is empty"
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Invalid or missing JWT token",
+              "content_type": "application/json",
+              "example": {
+                "error": "Unauthorized"
+              }
+            }
+          }
+        },
+        "qos/ratelimit/router": {
+          "max_rate": 20,
+          "capacity": 20
+        }
+      }
+    },
+    {
+      "endpoint": "/api/v1/ecommerce/orders",
+      "method": "GET",
+      "backend": [
+        {
+          "host": [
+            "http://ecommerce:3000"
+          ],
+          "url_pattern": "/api/v1/ecommerce/orders",
+          "encoding": "json"
+        }
+      ],
+      "input_query_strings": [
+        "page",
+        "limit",
+        "status"
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "audience": ["log430-api"],
+          "issuer": "log430-auth-service",
+          "roles_key": "role",
+          "roles": ["admin", "employee", "customer"],
+          "secret": "your-super-secret-key-change-in-production-min-256-bits-long",
+          "cache": false,
+          "operation_debug": true,
+          "propagate_claims": [
+            ["sub", "X-User-Id"],
+            ["username", "X-User-Name"],
+            ["role", "X-User-Role"],
+            ["storeId", "X-Store-Id"]
+          ]
+        },
+        "documentation/openapi": {
+          "summary": "Get user orders",
+          "description": "Retrieves all orders for the authenticated user with pagination and filtering options",
+          "tags": ["ecommerce"],
+          "query_definition": [
+            {
+              "name": "page",
+              "description": "Page number for pagination",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "limit",
+              "description": "Number of orders per page",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "status",
+              "description": "Filter by order status",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "response_definition": {
+            "200": {
+              "description": "Orders retrieved successfully",
+              "content_type": "application/json",
+              "example": {
+                "success": true,
+                "data": {
+                  "orders": [
+                    {
+                      "id": 1,
+                      "orderNumber": "ORD-2025-001",
+                      "status": "delivered",
+                      "totalAmount": 15.50,
+                      "createdAt": "2025-01-01T12:00:00Z"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total": 1,
+                    "pages": 1
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Invalid or missing JWT token",
+              "content_type": "application/json",
+              "example": {
+                "error": "Unauthorized"
+              }
+            }
+          }
+        },
+        "qos/ratelimit/router": {
+          "max_rate": 100,
+          "capacity": 100
+        }
+      }
+    },
+    {
+      "endpoint": "/api/v1/ecommerce/metrics",
+      "method": "GET",
+      "backend": [
+        {
+          "host": [
+            "http://ecommerce:3000"
+          ],
+          "url_pattern": "/api/v1/ecommerce/metrics",
+          "encoding": "no-op"
+        }
+      ],
+      "extra_config": {
+        "documentation/openapi": {
+          "summary": "Get e-commerce service metrics",
+          "description": "Returns Prometheus-formatted metrics for monitoring e-commerce service performance",
+          "tags": ["monitoring"],
+          "response_definition": {
+            "200": {
+              "description": "Metrics data in Prometheus format",
+              "content_type": "text/plain",
+              "example": "# HELP cart_operations_total Total number of cart operations\n# TYPE cart_operations_total counter\ncart_operations_total{operation=\"add_item\",status=\"success\"} 42"
+            }
+          }
+        },
+        "qos/ratelimit/router": {
+          "max_rate": 200,
+          "capacity": 200
+        }
+      }
+    },
+    {
       "endpoint": "/docs",
       "method": "GET",
       "output_encoding": "no-op",
