@@ -112,6 +112,7 @@ services:
     container_name: krakend
     volumes:
       - ./krakend/krakend.json:/etc/krakend/krakend.json
+      - ./krakend/jwk_private_key.json:/etc/krakend/jwk_private_key.json
     ports:
       - "3000:3000"
     command: ["run", "-c", "/etc/krakend/krakend.json"]

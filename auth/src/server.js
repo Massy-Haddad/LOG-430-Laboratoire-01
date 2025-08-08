@@ -62,7 +62,10 @@ function generateJWT(user) {
     iat: Math.floor(Date.now() / 1000),
   };
 
-  return jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256' });
+  return jwt.sign(payload, JWT_SECRET, { 
+    algorithm: 'HS256',
+    keyid: 'log430-key' 
+  });
 }
 
 // Health check endpoint
