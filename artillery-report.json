@@ -1,0 +1,1529 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 7302,
+      "vusers.created": 18100,
+      "http.requests": 18100,
+      "http.codes.400": 18100,
+      "http.responses": 18100,
+      "http.downloaded_bytes": 0,
+      "plugins.metrics-by-endpoint./auth/login.codes.400": 18100,
+      "errors.Failed capture or match": 18100,
+      "vusers.failed": 18100,
+      "vusers.created_by_name.🛍️ Black Friday Cart Spam": 1831,
+      "vusers.created_by_name.💳 Black Friday Speed Checkout": 5361,
+      "vusers.created_by_name.🔥 Black Friday System Stress": 3606
+    },
+    "rates": {
+      "http.request_rate": 149
+    },
+    "firstCounterAt": 1754695575196,
+    "firstHistogramAt": 1754695575275,
+    "lastCounterAt": 1754695695694,
+    "lastHistogramAt": 1754695695694,
+    "firstMetricAt": 1754695575196,
+    "lastMetricAt": 1754695695694,
+    "period": 1754695690000,
+    "summaries": {
+      "http.response_time": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      },
+      "http.response_time.4xx": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      },
+      "plugins.metrics-by-endpoint.response_time./auth/login": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      }
+    },
+    "histograms": {
+      "http.response_time": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      },
+      "http.response_time.4xx": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      },
+      "plugins.metrics-by-endpoint.response_time./auth/login": {
+        "min": 0,
+        "max": 162,
+        "count": 18100,
+        "mean": 16.8,
+        "p50": 7.9,
+        "median": 7.9,
+        "p75": 22,
+        "p90": 43.4,
+        "p95": 61,
+        "p99": 102.5,
+        "p999": 156
+      }
+    }
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 25,
+        "vusers.created": 68,
+        "http.requests": 68,
+        "http.codes.400": 68,
+        "http.responses": 68,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 68,
+        "errors.Failed capture or match": 68,
+        "vusers.failed": 68,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 6,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 24,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 13
+      },
+      "rates": {
+        "http.request_rate": 14
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695575196,
+      "firstHistogramAt": 1754695575275,
+      "lastCounterAt": 1754695579982,
+      "lastHistogramAt": 1754695579982,
+      "firstMetricAt": 1754695575196,
+      "lastMetricAt": 1754695579982,
+      "period": "1754695570000",
+      "summaries": {
+        "http.response_time": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        },
+        "http.response_time.4xx": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        },
+        "http.response_time.4xx": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 3,
+          "max": 11,
+          "count": 68,
+          "mean": 6.2,
+          "p50": 6,
+          "median": 6,
+          "p75": 7,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.1,
+          "p999": 10.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.🔥 Black Friday System Stress": 58,
+        "vusers.created": 297,
+        "http.requests": 297,
+        "http.codes.400": 297,
+        "http.responses": 297,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 297,
+        "errors.Failed capture or match": 297,
+        "vusers.failed": 297,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 29,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 95,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 115
+      },
+      "rates": {
+        "http.request_rate": 30
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695580025,
+      "firstHistogramAt": 1754695580039,
+      "lastCounterAt": 1754695589997,
+      "lastHistogramAt": 1754695589997,
+      "firstMetricAt": 1754695580025,
+      "lastMetricAt": 1754695589997,
+      "period": "1754695580000",
+      "summaries": {
+        "http.response_time": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 2,
+          "max": 21,
+          "count": 297,
+          "mean": 5.5,
+          "p50": 5,
+          "median": 5,
+          "p75": 6,
+          "p90": 7.9,
+          "p95": 8.9,
+          "p99": 10.9,
+          "p999": 18
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 209,
+        "vusers.created": 504,
+        "http.requests": 504,
+        "http.codes.400": 504,
+        "http.responses": 504,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 503,
+        "errors.Failed capture or match": 503,
+        "vusers.failed": 503,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 155,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 48,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 92
+      },
+      "rates": {
+        "http.request_rate": 51
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695590014,
+      "firstHistogramAt": 1754695590022,
+      "lastCounterAt": 1754695599999,
+      "lastHistogramAt": 1754695599982,
+      "firstMetricAt": 1754695590014,
+      "lastMetricAt": 1754695599999,
+      "period": "1754695590000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 35,
+          "count": 503,
+          "mean": 4.9,
+          "p50": 4,
+          "median": 4,
+          "p75": 5,
+          "p90": 7.9,
+          "p95": 12.1,
+          "p99": 15,
+          "p999": 21.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 740,
+        "errors.Failed capture or match": 740,
+        "vusers.failed": 740,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 148,
+        "vusers.created": 739,
+        "http.requests": 739,
+        "http.codes.400": 739,
+        "http.responses": 739,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 305,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 81,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 205
+      },
+      "rates": {
+        "http.request_rate": 74
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695600000,
+      "firstHistogramAt": 1754695600000,
+      "lastCounterAt": 1754695609996,
+      "lastHistogramAt": 1754695609995,
+      "firstMetricAt": 1754695600000,
+      "lastMetricAt": 1754695609996,
+      "period": "1754695600000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 62,
+          "count": 740,
+          "mean": 6.6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 15,
+          "p95": 21.1,
+          "p99": 44.3,
+          "p999": 58.6
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 118,
+        "vusers.created": 987,
+        "http.requests": 987,
+        "http.codes.400": 986,
+        "http.responses": 986,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 986,
+        "errors.Failed capture or match": 986,
+        "vusers.failed": 986,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 289,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 207,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 373
+      },
+      "rates": {
+        "http.request_rate": 99
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695610000,
+      "firstHistogramAt": 1754695610006,
+      "lastCounterAt": 1754695619995,
+      "lastHistogramAt": 1754695619989,
+      "firstMetricAt": 1754695610000,
+      "lastMetricAt": 1754695619995,
+      "period": "1754695610000",
+      "summaries": {
+        "http.response_time": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        },
+        "http.response_time.4xx": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        },
+        "http.response_time.4xx": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 0,
+          "max": 37,
+          "count": 986,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 7,
+          "p95": 10.9,
+          "p99": 21.1,
+          "p999": 30.3
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.400": 1252,
+        "http.responses": 1252,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 1252,
+        "errors.Failed capture or match": 1252,
+        "vusers.failed": 1252,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 382,
+        "vusers.created": 1252,
+        "http.requests": 1251,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 487,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 126,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 257
+      },
+      "rates": {
+        "http.request_rate": 125
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695620000,
+      "firstHistogramAt": 1754695620000,
+      "lastCounterAt": 1754695629999,
+      "lastHistogramAt": 1754695629998,
+      "firstMetricAt": 1754695620000,
+      "lastMetricAt": 1754695629999,
+      "period": "1754695620000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 35,
+          "count": 1252,
+          "mean": 4.4,
+          "p50": 3,
+          "median": 3,
+          "p75": 4,
+          "p90": 8.9,
+          "p95": 13.1,
+          "p99": 19.9,
+          "p999": 27.9
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.requests": 1494,
+        "http.codes.400": 1490,
+        "http.responses": 1490,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 1490,
+        "errors.Failed capture or match": 1490,
+        "vusers.failed": 1490,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 479,
+        "vusers.created": 1493,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 580,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 283,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 151
+      },
+      "rates": {
+        "http.request_rate": 149
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695630002,
+      "firstHistogramAt": 1754695630007,
+      "lastCounterAt": 1754695639996,
+      "lastHistogramAt": 1754695639974,
+      "firstMetricAt": 1754695630002,
+      "lastMetricAt": 1754695639996,
+      "period": "1754695630000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 31,
+          "count": 1490,
+          "mean": 4.9,
+          "p50": 3,
+          "median": 3,
+          "p75": 6,
+          "p90": 10.1,
+          "p95": 13.9,
+          "p99": 23.8,
+          "p999": 30.3
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.400": 1767,
+        "http.responses": 1767,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 1767,
+        "errors.Failed capture or match": 1767,
+        "vusers.failed": 1767,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 522,
+        "vusers.created": 1764,
+        "http.requests": 1764,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 725,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 190,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 327
+      },
+      "rates": {
+        "http.request_rate": 177
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695640001,
+      "firstHistogramAt": 1754695640001,
+      "lastCounterAt": 1754695649999,
+      "lastHistogramAt": 1754695649997,
+      "firstMetricAt": 1754695640001,
+      "lastMetricAt": 1754695649999,
+      "period": "1754695640000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 60,
+          "count": 1767,
+          "mean": 6,
+          "p50": 4,
+          "median": 4,
+          "p75": 6,
+          "p90": 12.1,
+          "p95": 18,
+          "p99": 34.1,
+          "p999": 57.4
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 603,
+        "vusers.created": 2015,
+        "http.requests": 2015,
+        "http.codes.400": 2013,
+        "http.responses": 2013,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 2013,
+        "errors.Failed capture or match": 2012,
+        "vusers.failed": 2012,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 371,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 840,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 201
+      },
+      "rates": {
+        "http.request_rate": 202
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695650003,
+      "firstHistogramAt": 1754695650006,
+      "lastCounterAt": 1754695659999,
+      "lastHistogramAt": 1754695659999,
+      "firstMetricAt": 1754695650003,
+      "lastMetricAt": 1754695659999,
+      "period": "1754695650000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 81,
+          "count": 2013,
+          "mean": 9.6,
+          "p50": 6,
+          "median": 6,
+          "p75": 12.1,
+          "p90": 22,
+          "p95": 29.1,
+          "p99": 49.9,
+          "p999": 74.4
+        }
+      }
+    },
+    {
+      "counters": {
+        "errors.Failed capture or match": 2182,
+        "vusers.failed": 2182,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 855,
+        "vusers.created": 2193,
+        "http.requests": 2193,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 224,
+        "http.codes.400": 2181,
+        "http.responses": 2181,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 2181,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 458,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 656
+      },
+      "rates": {
+        "http.request_rate": 219
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695660000,
+      "firstHistogramAt": 1754695660020,
+      "lastCounterAt": 1754695669999,
+      "lastHistogramAt": 1754695669999,
+      "firstMetricAt": 1754695660000,
+      "lastMetricAt": 1754695669999,
+      "period": "1754695660000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 82,
+          "count": 2181,
+          "mean": 17.5,
+          "p50": 10.9,
+          "median": 10.9,
+          "p75": 24.8,
+          "p90": 41.7,
+          "p95": 53,
+          "p99": 71.5,
+          "p999": 79.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 1026,
+        "vusers.created": 2545,
+        "http.requests": 2545,
+        "http.codes.400": 2550,
+        "http.responses": 2550,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 2550,
+        "errors.Failed capture or match": 2550,
+        "vusers.failed": 2550,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 528,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 242,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 749
+      },
+      "rates": {
+        "http.request_rate": 255
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695670002,
+      "firstHistogramAt": 1754695670004,
+      "lastCounterAt": 1754695679998,
+      "lastHistogramAt": 1754695679994,
+      "firstMetricAt": 1754695670002,
+      "lastMetricAt": 1754695679998,
+      "period": "1754695670000",
+      "summaries": {
+        "http.response_time": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        },
+        "http.response_time.4xx": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 1,
+          "max": 133,
+          "count": 2550,
+          "mean": 22.8,
+          "p50": 18,
+          "median": 18,
+          "p75": 30.3,
+          "p90": 47.9,
+          "p95": 63.4,
+          "p99": 85.6,
+          "p999": 111.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.400": 2676,
+        "http.responses": 2676,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 2676,
+        "errors.Failed capture or match": 2676,
+        "vusers.failed": 2676,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 1156,
+        "vusers.created": 2682,
+        "http.requests": 2682,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 550,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 734,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 242
+      },
+      "rates": {
+        "http.request_rate": 268
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695680000,
+      "firstHistogramAt": 1754695680000,
+      "lastCounterAt": 1754695689999,
+      "lastHistogramAt": 1754695689997,
+      "firstMetricAt": 1754695680000,
+      "lastMetricAt": 1754695689999,
+      "period": "1754695680000",
+      "summaries": {
+        "http.response_time": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        },
+        "http.response_time.4xx": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 2,
+          "max": 110,
+          "count": 2676,
+          "mean": 28.4,
+          "p50": 22.9,
+          "median": 22.9,
+          "p75": 39.3,
+          "p90": 56.3,
+          "p95": 67.4,
+          "p99": 89.1,
+          "p999": 108.9
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.400": 1577,
+        "http.responses": 1577,
+        "http.downloaded_bytes": 0,
+        "plugins.metrics-by-endpoint./auth/login.codes.400": 1577,
+        "errors.Failed capture or match": 1577,
+        "vusers.failed": 1577,
+        "vusers.created_by_name.🛒 Black Friday Cart Frenzy": 606,
+        "vusers.created": 1561,
+        "http.requests": 1561,
+        "vusers.created_by_name.🛍️ Black Friday Cart Spam": 173,
+        "vusers.created_by_name.🔥 Black Friday System Stress": 314,
+        "vusers.created_by_name.💳 Black Friday Speed Checkout": 468
+      },
+      "rates": {
+        "http.request_rate": 278
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1754695690024,
+      "firstHistogramAt": 1754695690024,
+      "lastCounterAt": 1754695695694,
+      "lastHistogramAt": 1754695695694,
+      "firstMetricAt": 1754695690024,
+      "lastMetricAt": 1754695695694,
+      "period": "1754695690000",
+      "summaries": {
+        "http.response_time": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        },
+        "http.response_time.4xx": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        },
+        "http.response_time.4xx": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        },
+        "plugins.metrics-by-endpoint.response_time./auth/login": {
+          "min": 3,
+          "max": 162,
+          "count": 1577,
+          "mean": 47.5,
+          "p50": 32.8,
+          "median": 32.8,
+          "p75": 71.5,
+          "p90": 102.5,
+          "p95": 127.8,
+          "p99": 156,
+          "p999": 162.4
+        }
+      }
+    }
+  ]
+}
