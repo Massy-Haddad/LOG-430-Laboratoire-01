@@ -1,46 +1,148 @@
 config:
-  target: "http://localhost:3000"
+  target: "http://krakend:3000"
   phases:
-    - duration: 60
+    # Quick warm up - early shoppers
+    - duration: 20
       arrivalRate: 10
-      rampTo: 30
-      name: "Montée progressive de la charge"
+      rampTo: 50
+      name: "🔥 Black Friday Warm Up"
+    # Massive traffic spike - the rush begins
+    - duration: 60
+      arrivalRate: 50
+      rampTo: 200
+      name: "💥 Black Friday Rush - Peak Traffic"
+    # Sustained high stress - everyone shopping
+    - duration: 40
+      arrivalRate: 200
+      rampTo: 300
+      name: "🛒 Black Friday Frenzy - Maximum Load"
   processor: "./processor.cjs"
   defaults:
     headers:
       Content-Type: "application/json"
+  variables:
+    # Simulate different user behaviors
+    userTypes: ["casual_shopper", "bargain_hunter", "bulk_buyer", "window_shopper"]
+    products: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    quantities: [1, 2, 3, 5, 10]
 
 scenarios:
-  - name: "Connexion et requêtes protégées"
+  # Aggressive Shopper - Fast cart actions
+  - name: "🛒 Black Friday Cart Frenzy"
+    weight: 40
     flow:
       - post:
           url: "/auth/login"
           json:
-            username: "admin"
+            username: "bf{{ $randomInt(1, 1000) }}"
             password: "password"
           capture:
             json: "$.token"
             as: "token"
+      # Rapid cart operations
+      - loop:
+          - post:
+              url: "/api/v1/ecommerce/cart"
+              json:
+                productId: "{{ $randomInt(1, 10) }}"
+                quantity: "{{ $randomInt(1, 5) }}"
+                price: "{{ $randomNumber(10, 100) }}"
+                productName: "BlackFriday Deal {{ $randomInt(1, 10) }}"
+          - think: 0.5
+        count: 3
       - get:
-          url: "/api/v1/store/stock/1"
-      - get:
-          url: "/api/v1/store/stock/2"
-      - get:
-          url: "/api/v1/store/stock/3"
-      - get:
-          url: "/api/v1/store/reports/sales?startDate=2025-06-01&endDate=2025-06-30"
-      - put:
-          url: "/api/v1/store/products/1"
+          url: "/api/v1/ecommerce/cart"
+
+  # Speed Buyer - Quick checkout attempts
+  - name: "💳 Black Friday Speed Checkout"
+    weight: 30
+    flow:
+      - post:
+          url: "/auth/login"
           json:
-            name: "Pomme Golden"
-            price: 1.5
-            category: "Fruits"
+            username: "speed{{ $randomInt(1, 500) }}"
+            password: "password"
+          capture:
+            json: "$.token"
+            as: "token"
+      # Add items quickly
+      - post:
+          url: "/api/v1/ecommerce/cart"
+          json:
+            productId: "{{ $randomInt(1, 10) }}"
+            quantity: "{{ $randomInt(5, 20) }}"
+            price: "{{ $randomNumber(50, 200) }}"
+            productName: "Hot Deal {{ $randomInt(1, 10) }}"
+      - post:
+          url: "/api/v1/ecommerce/cart"
+          json:
+            productId: "{{ $randomInt(1, 10) }}"
+            quantity: "{{ $randomInt(1, 10) }}"
+            price: "{{ $randomNumber(20, 150) }}"
+            productName: "Flash Sale {{ $randomInt(1, 10) }}"
+      # Try to checkout immediately
+      - post:
+          url: "/api/v1/ecommerce/checkout"
+          json:
+            paymentMethod: "credit_card"
+            shippingAddress: "{{ $randomInt(1, 999) }} Black Friday St"
+
+  # Heavy Loader - Stress test multiple endpoints
+  - name: "🔥 Black Friday System Stress"
+    weight: 20
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            username: "stress{{ $randomInt(1, 300) }}"
+            password: "password"
+          capture:
+            json: "$.token"
+            as: "token"
+      # Hammer multiple endpoints rapidly
       - get:
           url: "/api/v1/ecommerce/cart"
       - post:
           url: "/api/v1/ecommerce/cart"
           json:
-            productId: 1
-            quantity: 2
-            price: 1.5
-            productName: "Pomme Golden"
+            productId: "{{ $randomInt(1, 10) }}"
+            quantity: "{{ $randomInt(10, 50) }}"
+            price: "{{ $randomNumber(100, 500) }}"
+            productName: "Bulk Item {{ $randomInt(1, 10) }}"
+      - get:
+          url: "/api/v1/ecommerce/cart"
+      - get:
+          url: "/api/v1/ecommerce/orders"
+      - post:
+          url: "/api/v1/ecommerce/checkout"
+          json:
+            paymentMethod: "credit_card"
+            shippingAddress: "{{ $randomInt(1, 999) }} Stress Test Ave"
+
+  # Cart Spammer - High frequency cart operations
+  - name: "🛍️ Black Friday Cart Spam"
+    weight: 10
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            username: "spam{{ $randomInt(1, 200) }}"
+            password: "password"
+          capture:
+            json: "$.token"
+            as: "token"
+      # Rapid fire cart additions
+      - loop:
+          - post:
+              url: "/api/v1/ecommerce/cart"
+              json:
+                productId: "{{ $randomInt(1, 10) }}"
+                quantity: "{{ $randomInt(1, 3) }}"
+                price: "{{ $randomNumber(5, 50) }}"
+                productName: "Spam Item {{ $randomInt(1, 10) }}"
+        count: 5
+      # Check cart multiple times
+      - loop:
+          - get:
+              url: "/api/v1/ecommerce/cart"
+        count: 3

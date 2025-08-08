@@ -165,6 +165,21 @@ services:
     - pos-net
     ports:
     - 6379:6379
+  artillery:
+    container_name: artillery-load-test
+    build:
+      context: ./load-test
+    networks:
+      - pos-net
+    depends_on:
+      - krakend
+      - store
+      - ecommerce
+      - auth
+    volumes:
+      - ./load-test/reports:/tmp
+    profiles:
+      - load-test
 volumes:
   grafana-storage: null
   pos_data: null
