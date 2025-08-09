@@ -157,7 +157,11 @@ Le système de caisse multi-magasins expose ses fonctionnalités via une **API G
 
 Le système suit une architecture microservices avec séparation claire des responsabilités par domaine métier :
 
+> Vue de développement (Diagrammes 4+1)
 ![4+1 - Development View](../UML/development-view.png)
+
+> Vue logique (Diagrammes 4+1)
+![4+1 - Logical View](../UML/logical-view.png)
 
 ### 5.2 Composants Principaux
 
