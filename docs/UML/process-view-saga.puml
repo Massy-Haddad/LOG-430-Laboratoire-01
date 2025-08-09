@@ -1,0 +1,92 @@
+@startuml saga-sequence-diagram
+hide footbox
+
+title Laboratory 6: Saga Orchestrated Checkout - Sequence Diagram with Alternative Scenarios
+
+participant "Client" as client
+participant "KrakenD\nGateway" as gateway
+participant "E-commerce\nService" as ecommerce
+participant "Saga\nOrchestrator" as orchestrator
+participant "Saga\nRepository" as sagarepo
+participant "Store\nService" as store
+participant "Payment\nService" as payment
+
+== Saga Initiation ==
+
+client -> gateway : POST /api/v1/ecommerce/checkout/saga
+note right : Checkout request with\nitems, payment, shipping
+
+gateway -> gateway : Validate JWT Token
+
+alt Valid JWT Token
+    gateway -> ecommerce : Forward authenticated request
+    
+    ecommerce -> orchestrator : startSaga("CHECKOUT_SAGA", checkoutData)
+    orchestrator -> sagarepo : save(sagaInstance)
+    sagarepo --> orchestrator : sagaId
+    
+    orchestrator --> ecommerce : {sagaId, state: "PENDING"}
+    ecommerce --> gateway : 202 Accepted {sagaId}
+    gateway --> client : 202 Accepted {sagaId}
+end
+
+== Scenario 1: Successful Saga Execution ==
+
+orchestrator -> orchestrator : executeSaga(sagaId)
+orchestrator -> sagarepo : updateState(sagaId, "RUNNING")
+
+note over orchestrator : Step 1: Validate Stock
+orchestrator -> store : POST /api/v1/store/stock/validate
+note right : {items, sagaId, correlationId}
+
+store -> store : Check inventory availability
+store --> orchestrator : {success: true, available: true}
+
+note over orchestrator : Step 2: Reserve Stock  
+orchestrator -> store : POST /api/v1/store/stock/reserve
+note right : {items, reservationId, sagaId}
+
+store -> store : Create temporary reservation
+store --> orchestrator : {success: true, reservationId}
+orchestrator -> sagarepo : updateStep(sagaId, "RESERVE_STOCK", "COMPLETED")
+
+note over orchestrator : Step 3: Process Payment
+orchestrator -> payment : processPayment(amount, paymentMethod, sagaId)
+
+payment -> payment : Process with payment provider
+payment --> orchestrator : {success: true, transactionId}
+orchestrator -> sagarepo : updateStep(sagaId, "PROCESS_PAYMENT", "COMPLETED")
+
+note over orchestrator : Step 4: Commit Stock Reservation
+orchestrator -> store : POST /api/v1/store/stock/commit
+note right : {reservationId, sagaId}
+
+store -> store : Finalize reservation and update inventory
+store --> orchestrator : {success: true}
+orchestrator -> sagarepo : updateStep(sagaId, "COMMIT_STOCK", "COMPLETED")
+
+note over orchestrator : Step 5: Finalize Order
+orchestrator -> ecommerce : createOrder(sagaData, sagaId)
+ecommerce -> ecommerce : Create order record
+ecommerce --> orchestrator : {success: true, orderId}
+
+orchestrator -> sagarepo : updateState(sagaId, "COMPLETED")
+note over orchestrator : ✅ Saga Completed Successfully
+
+== Scenario 2: Stock Validation Failure ==
+
+orchestrator -> orchestrator : executeSaga(sagaId)
+orchestrator -> sagarepo : updateState(sagaId, "RUNNING")
+
+note over orchestrator : Step 1: Validate Stock
+orchestrator -> store : POST /api/v1/store/stock/validate
+note right : {items, sagaId, correlationId}
+
+store -> store : Check inventory availability
+store --> orchestrator : {success: false, error: "Insufficient stock"}
+
+note over orchestrator : ❌ Stock Validation Failed
+orchestrator -> sagarepo : updateState(sagaId, "FAILED")
+note over orchestrator : No compensation needed\n(No resources allocated yet)
+
+

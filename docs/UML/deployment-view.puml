@@ -1,11 +1,11 @@
 @startuml LOG430 Multi-Store System - Deployment View
 
-title LOG430 Multi-Store System - Physical/Deployment View
+title LOG430 Multi-Store System - Physical/Deployment View (Laboratory 6: Saga Pattern)
 
 actor "Client (User)" as client
 
 node "Frontend" as frontend {
-  component "CLI Application" as webapp
+  component "Swagger-UI (openapi interface)" as webapp
 }
 
 node "API Gateway" as gateway {
@@ -18,18 +18,25 @@ node "Auth Service" as auth_node {
 
 node "Store Service" as store_node {
   component "Store Management Service\n(Node.js/Express)" as store_service
+  component "Stock Reservation\nManagement" as stock_reservation
 }
 
 node "E-commerce Service" as ecommerce_node {
   component "E-commerce Service\n(Node.js/Express)" as ecommerce_service
+  component "Saga Orchestrator" as saga_orchestrator
+  component "Payment Service" as payment_service
 }
 
 database "PostgreSQL Database" as postgres {
   component "pos_db" as database
+  component "saga_instances" as saga_db
+  component "stock_reservations" as reservation_db
+  component "payment_transactions" as payment_db
 }
 
 database "Redis Cache" as redis {
   component "Cache & Sessions" as cache
+  component "Saga State Cache" as saga_cache
 }
 
 node "Monitoring" as monitoring {
@@ -46,23 +53,37 @@ frontend --> gateway : "HTTPS (API calls)"
 ' Gateway to Services
 gateway --> auth_service : "HTTPS (Authentication)"
 gateway --> store_service : "HTTPS (Store operations)"
-gateway --> ecommerce_service : "HTTPS (E-commerce)"
+gateway --> ecommerce_service : "HTTPS (E-commerce & Saga)"
+
+' Saga Orchestration
+saga_orchestrator --> store_service : "HTTP (Stock operations)"
+saga_orchestrator --> payment_service : "Internal (Payment processing)"
 
 ' Services to Database
 auth_service --> database : "SQL (User data)"
 store_service --> database : "SQL (Store data)"
+store_service --> reservation_db : "SQL (Stock reservations)"
 ecommerce_service --> database : "SQL (E-commerce data)"
+saga_orchestrator --> saga_db : "SQL (Saga instances)"
+payment_service --> payment_db : "SQL (Payment transactions)"
 
 ' Services to Cache
 store_service --> cache : "Cache & Events"
 ecommerce_service --> cache : "Cache & Events"
+saga_orchestrator --> saga_cache : "Saga state caching"
 
 ' Monitoring
 store_service --> prometheus : "Metrics (HTTPS API)"
 auth_service --> prometheus : "Metrics (HTTPS API)"
 ecommerce_service --> prometheus : "Metrics (HTTPS API)"
+saga_orchestrator --> prometheus : "Saga metrics"
 prometheus --> grafana : "Data Query"
 
-@enduml
+' Environment Variables
+note top of store_service : "ECOMMERCE_SERVICE_URL=http://ecommerce:3000"
+note top of ecommerce_service : "STORE_SERVICE_URL=http://store:3000\nAUTH_SERVICE_URL=http://auth:3000"
+
+' Saga Flow
+note right of saga_orchestrator : "Coordinates distributed\ntransactions across services\nwith compensation actions"
 
 @enduml

@@ -1,6 +1,6 @@
 @startuml Development View - LOG430 Component Architecture
 
-title LOG430 Multi-Store System - Development View (Component Architecture)
+title LOG430 Multi-Store System - Development View (Laboratory 6: Saga Pattern)
 
 package "KrakenD Gateway" {
   [Gateway Router]
@@ -25,18 +25,26 @@ package "Microservices" {
     [Routes: Store Operations]
     [Entities: Product, Sale, SalesReport]
     [Services: Sales, Stock, Report]
-    [Repositories: Product, Sale, Inventory]
+    [Repositories: Product, Sale, Inventory, StockReservation]
     [Models: Store]
     [Middleware: Metrics]
+    [Infrastructure: StockReservation DB]
   }
   
   package "E-commerce Service" {
-    [Controllers: Cart, Checkout]
-    [Routes: E-commerce]
+    package "Saga Components" {
+      [SagaOrchestrator]
+      [SagaInstance]
+      [SagaStateMachine] 
+      [SagaRepository]
+    }
+    [Controllers: Cart, Checkout, Saga]
+    [Routes: E-commerce, Saga]
     [Entities: Cart, Order]
-    [Services: Cart, Checkout]
-    [Repositories: Cart, Order]
-    [Models: E-commerce]
+    [Services: Cart, Checkout, Payment]
+    [Repositories: Cart, Order, Saga]
+    [Models: E-commerce, Saga]
+    [Infrastructure: Payment, Saga DB]
   }
 }
 
@@ -47,6 +55,29 @@ package "Shared Infrastructure" {
   [Redis Cache]
   [Prometheus Metrics]
   [Grafana Dashboard]
+  [Saga State Persistence]
+  [Stock Reservation Tables]
+  [Payment Transaction Tables]
 }
+
+package "Inter-Service Communication" {
+  [HTTP Client]
+  [Service Discovery]
+  [Circuit Breaker]
+  [Retry Logic]
+  [Correlation ID Tracking]
+}
+
+' Saga Flow Relationships
+[SagaOrchestrator] --> [SagaStateMachine] : defines workflow
+[SagaOrchestrator] --> [SagaRepository] : persists state
+[SagaOrchestrator] --> [Controllers: Stock] : calls stock operations
+[SagaOrchestrator] --> [Services: Payment] : processes payments
+[SagaRepository] --> [Saga State Persistence] : stores instances
+
+' Cross-Service Relationships
+[Controllers: Checkout] --> [SagaOrchestrator] : initiates saga
+[Services: Stock] --> [Repositories: StockReservation] : manages reservations
+[Services: Payment] --> [Payment Transaction Tables] : records transactions
 
 @enduml

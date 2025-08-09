@@ -1,12 +1,13 @@
-@startuml Scenarios View - LOG430 Use Cases
+@startuml Scenarios View - LOG430 Saga Orchestrated Pattern
 
 !define PRIMARY_COLOR #2E86AB
 !define SECONDARY_COLOR #A23B72
 !define ACCENT_COLOR #F18F01
 !define ADMIN_COLOR #C73E1D
 !define EMPLOYEE_COLOR #28A745
+!define SAGA_COLOR #FF6B35
 
-title LOG430 Multi-Store System - Scenarios View (Use Cases)
+title LOG430 Multi-Store System - Scenarios View (Laboratory 6: Saga Orchestrated Pattern)
 
 ' Actors
 actor "Store Employee" as employee #EMPLOYEE_COLOR
@@ -15,9 +16,10 @@ actor "System Administrator" as admin #ADMIN_COLOR
 actor "Data Analyst" as analyst #ACCENT_COLOR
 actor "Customer" as customer #PRIMARY_COLOR
 actor "System" as system #ACCENT_COLOR
+actor "Saga Orchestrator" as saga #SAGA_COLOR
 
 ' System Boundary
-package "LOG430 Multi-Store System" {
+package "LOG430 Multi-Store System with Saga Pattern" {
   
   ' Authentication Use Cases
   package "Authentication & Authorization" as auth_package {
@@ -28,9 +30,13 @@ package "LOG430 Multi-Store System" {
     usecase "Handle Rate Limiting" as rate_limiting
   }
   
-  ' Store Operations Use Cases
-  package "Store Operations" as store_package {
+  ' Store Operations Use Cases (Enhanced for Saga)
+  package "Store Operations with Saga Support" as store_package {
     usecase "Check Product Stock" as check_stock
+    usecase "Validate Stock for Saga" as validate_stock_saga
+    usecase "Reserve Stock Temporarily" as reserve_stock
+    usecase "Commit Stock Reservation" as commit_stock
+    usecase "Release Stock Reservation" as release_stock
     usecase "Sell Product" as sell_product
     usecase "Process Return" as process_return
     usecase "Replenish Inventory" as replenish_stock
@@ -39,41 +45,69 @@ package "LOG430 Multi-Store System" {
     usecase "View Store Dashboard" as view_dashboard
   }
   
-  ' Reporting Use Cases
-  package "Reporting & Analytics" as reporting_package {
+  ' Saga Orchestration Use Cases
+  package "Saga Orchestration" as saga_package {
+    usecase "Initiate Checkout Saga" as initiate_saga
+    usecase "Execute Saga Steps" as execute_steps
+    usecase "Monitor Saga State" as monitor_saga
+    usecase "Handle Saga Failure" as handle_failure
+    usecase "Execute Compensation" as execute_compensation
+    usecase "Complete Saga" as complete_saga
+    usecase "Cleanup Failed Sagas" as cleanup_sagas
+  }
+  
+  ' Payment Processing Use Cases
+  package "Payment Processing" as payment_package {
+    usecase "Process Payment" as process_payment
+    usecase "Validate Payment Method" as validate_payment
+    usecase "Handle Payment Failure" as handle_payment_failure
+    usecase "Execute Payment Refund" as refund_payment
+    usecase "Track Payment Status" as track_payment
+  }
+  
+  ' E-commerce Use Cases (Enhanced for Saga)
+  package "E-commerce Operations with Saga" as ecommerce_package {
+    usecase "Add Items to Cart" as add_to_cart
+    usecase "View Shopping Cart" as view_cart
+    usecase "Update Cart Items" as update_cart
+    usecase "Checkout with Saga" as checkout_saga
+    usecase "Track Order Status" as track_order
+    usecase "Handle Order Cancellation" as cancel_order
+    usecase "Manage Cart Sessions" as manage_sessions
+  }
+  
+  ' Reporting Use Cases (Enhanced with Saga Metrics)
+  package "Reporting & Analytics with Saga Metrics" as reporting_package {
     usecase "Generate Sales Report" as generate_report
     usecase "View Sales Analytics" as view_analytics
     usecase "Monitor Store Performance" as monitor_performance
     usecase "Track Inventory Levels" as track_inventory
+    usecase "Monitor Saga Performance" as monitor_saga_perf
+    usecase "Analyze Transaction Success Rate" as analyze_success_rate
     usecase "Export Data" as export_data
   }
   
-  ' E-commerce Use Cases
-  package "E-commerce Operations" as ecommerce_package {
-    usecase "Add Items to Cart" as add_to_cart
-    usecase "View Shopping Cart" as view_cart
-    usecase "Update Cart Items" as update_cart
-    usecase "Checkout Process" as checkout
-    usecase "Manage Cart Sessions" as manage_sessions
-  }
-  
-  ' System Administration Use Cases
-  package "System Administration" as admin_package {
+  ' System Administration Use Cases (Enhanced for Saga)
+  package "System Administration with Saga Management" as admin_package {
     usecase "Monitor System Health" as monitor_health
     usecase "View System Metrics" as view_metrics
+    usecase "Monitor Saga Instances" as monitor_saga_instances
+    usecase "Manage Failed Sagas" as manage_failed_sagas
     usecase "Manage API Gateway" as manage_gateway
     usecase "Configure Services" as configure_services
     usecase "Handle System Alerts" as handle_alerts
     usecase "Backup Data" as backup_data
   }
   
-  ' Integration Use Cases
-  package "System Integration" as integration_package {
+  ' Integration Use Cases (Enhanced for Saga)
+  package "System Integration with Saga Support" as integration_package {
     usecase "API Gateway Routing" as api_routing
     usecase "Load Balancing" as load_balancing
     usecase "Cache Management" as cache_management
     usecase "Metrics Collection" as collect_metrics
     usecase "Service Discovery" as service_discovery
+    usecase "Inter-Service Communication" as inter_service_comm
+    usecase "Correlation ID Tracking" as correlation_tracking
   }
 }
 
@@ -83,11 +117,12 @@ package "External Systems" {
   usecase "Cache Operations" as cache_operations
   usecase "Monitoring Dashboard" as monitoring_dashboard
   usecase "API Documentation" as api_docs
+  usecase "Payment Provider Integration" as payment_provider
 }
 
 ' Actor-Use Case Relationships
 
-' Store Employee relationships
+' Store Employee relationships (Enhanced)
 employee --> login
 employee --> check_stock
 employee --> sell_product
@@ -95,7 +130,7 @@ employee --> process_return
 employee --> search_products
 employee --> view_dashboard
 
-' Store Manager relationships
+' Store Manager relationships (Enhanced)
 manager --> login
 manager --> replenish_stock
 manager --> update_product
@@ -103,29 +138,49 @@ manager --> view_analytics
 manager --> track_inventory
 manager --> view_dashboard
 manager --> generate_report
+manager --> monitor_saga_perf
 
-' System Administrator relationships
+' System Administrator relationships (Enhanced for Saga)
 admin --> login
 admin --> manage_users
 admin --> monitor_health
 admin --> view_metrics
+admin --> monitor_saga_instances
+admin --> manage_failed_sagas
 admin --> manage_gateway
 admin --> configure_services
 admin --> handle_alerts
 admin --> backup_data
 
-' Data Analyst relationships
+' Data Analyst relationships (Enhanced)
 analyst --> login
 analyst --> generate_report
 analyst --> view_analytics
 analyst --> monitor_performance
+analyst --> monitor_saga_perf
+analyst --> analyze_success_rate
 analyst --> export_data
 
-' Customer relationships
+' Customer relationships (Enhanced for Saga)
 customer --> add_to_cart
 customer --> view_cart
 customer --> update_cart
-customer --> checkout
+customer --> checkout_saga
+customer --> track_order
+
+' Saga Orchestrator relationships
+saga --> initiate_saga
+saga --> execute_steps
+saga --> monitor_saga
+saga --> handle_failure
+saga --> execute_compensation
+saga --> complete_saga
+saga --> validate_stock_saga
+saga --> reserve_stock
+saga --> commit_stock
+saga --> release_stock
+saga --> process_payment
+saga --> refund_payment
 
 ' System relationships (automated processes)
 system --> validate_token
@@ -137,82 +192,100 @@ system --> load_balancing
 system --> cache_management
 system --> collect_metrics
 system --> service_discovery
+system --> cleanup_sagas
+system --> correlation_tracking
 
-' Include relationships
-sell_product ..> validate_token : <<include>>
-replenish_stock ..> validate_token : <<include>>
-generate_report ..> validate_token : <<include>>
-update_product ..> validate_token : <<include>>
-process_return ..> validate_token : <<include>>
-view_analytics ..> validate_token : <<include>>
+' Saga Flow Include relationships
+checkout_saga ..> initiate_saga : <<include>>
+initiate_saga ..> execute_steps : <<include>>
+execute_steps ..> validate_stock_saga : <<include>>
+execute_steps ..> reserve_stock : <<include>>
+execute_steps ..> process_payment : <<include>>
+execute_steps ..> commit_stock : <<include>>
+execute_steps ..> complete_saga : <<include>>
 
-check_stock ..> cache_management : <<include>>
-sell_product ..> db_operations : <<include>>
-replenish_stock ..> db_operations : <<include>>
-generate_report ..> db_operations : <<include>>
+' Compensation Flow Include relationships
+handle_failure ..> execute_compensation : <<include>>
+execute_compensation ..> release_stock : <<include>>
+execute_compensation ..> refund_payment : <<include>>
 
-api_routing ..> validate_token : <<include>>
-api_routing ..> rate_limiting : <<include>>
-api_routing ..> load_balancing : <<include>>
+' Authentication Include relationships
+checkout_saga ..> validate_token : <<include>>
+initiate_saga ..> validate_token : <<include>>
+monitor_saga_instances ..> validate_token : <<include>>
 
-' Extend relationships
-sell_product <.. collect_metrics : <<extend>>
-replenish_stock <.. collect_metrics : <<extend>>
-login <.. track_logins : <<extend>>
-checkout <.. collect_metrics : <<extend>>
+' Database Include relationships
+execute_steps ..> db_operations : <<include>>
+execute_compensation ..> db_operations : <<include>>
+monitor_saga ..> db_operations : <<include>>
 
-manage_sessions <.. cache_operations : <<extend>>
-add_to_cart <.. cache_operations : <<extend>>
+' Payment Include relationships
+process_payment ..> validate_payment : <<include>>
+process_payment ..> payment_provider : <<include>>
+refund_payment ..> payment_provider : <<include>>
 
-view_metrics <.. monitoring_dashboard : <<extend>>
-monitor_health <.. monitoring_dashboard : <<extend>>
+' Extend relationships (Error Handling)
+execute_steps <.. handle_failure : <<extend>>
+process_payment <.. handle_payment_failure : <<extend>>
+checkout_saga <.. cancel_order : <<extend>>
+
+' Monitoring Extend relationships
+execute_steps <.. collect_metrics : <<extend>>
+execute_compensation <.. collect_metrics : <<extend>>
+complete_saga <.. collect_metrics : <<extend>>
+
+' Cache Extend relationships
+validate_stock_saga <.. cache_operations : <<extend>>
+reserve_stock <.. cache_operations : <<extend>>
 
 ' Dependency relationships
-generate_report ..> view_analytics : <<depends>>
-monitor_performance ..> view_metrics : <<depends>>
-handle_alerts ..> monitor_health : <<depends>>
+monitor_saga_perf ..> monitor_saga : <<depends>>
+analyze_success_rate ..> monitor_saga_perf : <<depends>>
+manage_failed_sagas ..> monitor_saga_instances : <<depends>>
+cleanup_sagas ..> monitor_saga_instances : <<depends>>
 
 ' Specialization relationships
 manager --|> employee : "is a"
 admin --|> manager : "is a"
+saga --|> system : "is a"
 
-' Use Case Scenarios Description
-note top of auth_package : "**Authentication Scenarios:**\n1. Employee login with credentials\n2. JWT token validation for each request\n3. Role-based access control\n4. Rate limiting protection"
+' Saga Scenarios Description
+note top of saga_package : "**Saga Orchestration Scenarios:**\n1. Successful checkout with all steps completed\n2. Failed payment with automatic compensation\n3. Insufficient stock with immediate rollback\n4. Timeout handling with step retry\n5. Manual saga cleanup and recovery"
 
-note right of store_package : "**Store Operation Scenarios:**\n1. Daily inventory check\n2. Customer purchase transaction\n3. Product return processing\n4. Stock replenishment workflow"
+note right of store_package : "**Enhanced Store Operations:**\n1. Stock validation for distributed transactions\n2. Temporary reservations with expiration\n3. Atomic commit/rollback operations\n4. Compensation-aware inventory management"
 
-note left of reporting_package : "**Reporting Scenarios:**\n1. Daily sales report generation\n2. Monthly performance analysis\n3. Inventory status monitoring\n4. Cross-store comparison"
+note left of payment_package : "**Payment Processing Scenarios:**\n1. Credit card payment with provider integration\n2. Payment failure with automatic retry\n3. Compensation refund processing\n4. Payment status tracking and reconciliation"
 
-note bottom of ecommerce_package : "**E-commerce Scenarios:**\n1. Online shopping cart management\n2. Multi-item checkout process\n3. Session timeout handling\n4. Cart persistence across sessions"
+note bottom of ecommerce_package : "**Saga-Enhanced E-commerce:**\n1. Multi-step checkout orchestration\n2. Order tracking with saga correlation\n3. Cancellation with compensation\n4. Cross-service transaction coordination"
 
-note top of admin_package : "**Administration Scenarios:**\n1. System health monitoring\n2. Performance metrics analysis\n3. Service configuration updates\n4. Alert response procedures"
+note top of reporting_package : "**Enhanced Analytics:**\n1. Saga performance monitoring\n2. Transaction success rate analysis\n3. Compensation frequency tracking\n4. Cross-service operation insights"
 
-note right of integration_package : "**Integration Scenarios:**\n1. API request routing through gateway\n2. Load balancing across service instances\n3. Cache hit/miss optimization\n4. Cross-service communication"
-
-' Priority levels
+' Priority levels for Saga Implementation
 note as N1
-  **High Priority Use Cases:**
-  - Login to System
-  - Sell Product
-  - Check Product Stock
-  - API Gateway Routing
-  - Validate JWT Token
+  **Critical Saga Use Cases:**
+  - Initiate Checkout Saga
+  - Execute Saga Steps
+  - Execute Compensation
+  - Reserve Stock Temporarily
+  - Process Payment
+  - Monitor Saga State
 end note
 
 note as N2
-  **Medium Priority Use Cases:**
-  - Generate Sales Report
-  - Replenish Inventory
-  - Monitor System Health
-  - Cache Management
+  **Important Saga Use Cases:**
+  - Handle Saga Failure
+  - Commit Stock Reservation
+  - Release Stock Reservation
+  - Monitor Saga Performance
+  - Cleanup Failed Sagas
 end note
 
 note as N3
-  **Low Priority Use Cases:**
-  - Export Data
-  - Configure Services
-  - API Documentation
-  - Backup Data
+  **Supporting Use Cases:**
+  - Correlation ID Tracking
+  - Inter-Service Communication
+  - Analyze Success Rate
+  - Manage Failed Sagas
 end note
 
 @enduml

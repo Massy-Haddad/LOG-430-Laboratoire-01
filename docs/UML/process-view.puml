@@ -1,43 +1,78 @@
 @startuml process-view
 hide footbox
+title Laboratory 6: Saga Orchestrated Checkout Process
+
 actor Client
 participant "KrakenD\n(API Gateway)" as Gateway
-participant "Store-Service\nRoute /sales" as Route
-participant "SalesController" as Controller
-participant "SalesService" as Service
-participant "ProductRepository" as ProductRepo
-participant "InventoryRepository" as InventoryRepo
-participant "SaleRepository" as SaleRepo
+participant "E-commerce Service\nCheckout Controller" as EcomController
+participant "Saga Orchestrator" as Orchestrator
+participant "Saga Repository" as SagaRepo
+participant "Store Service\nStock Controller" as StoreController
+participant "Payment Service" as PaymentService
+participant "Stock Reservation\nRepository" as StockRepo
 
-Client -> Gateway : POST /api/v1/sales\n{storeId, productId, quantity, token}
+Client -> Gateway : POST /api/v1/ecommerce/checkout/saga\n{items, paymentMethod, shippingAddress, token}
 Gateway -> Gateway : Validate JWT
 alt Token valid
-    Gateway -> Route : Forward request
-    Route -> Controller : handle POST /sales
-    Controller -> Service : sellProduct(storeId, productId, quantity, userId)
-    Service -> ProductRepo : getById(productId)
-    alt Product exists
-        Service -> InventoryRepo : getStock(storeId, productId)
-        alt Stock sufficient
-            Service -> SaleRepo : createSale(storeId, productId, quantity, userId)
-            Service -> InventoryRepo : decreaseStock(storeId, productId, quantity)
-            Service --> Controller : Sale created {saleId, productId, quantity}
-            Controller --> Route : 201 Created {saleId, productId, quantity}
-            Route --> Gateway : 201 Created {saleId, productId, quantity}
-            Gateway --> Client : 201 Created {saleId, productId, quantity}
-        else Stock insufficient
-            Service --> Controller : Error "Not enough stock"
-            Controller --> Route : 409 Conflict {"error":"Not enough stock"}
-            Route --> Gateway : 409 Conflict
-            Gateway --> Client : 409 Conflict
+    Gateway -> EcomController : Forward checkout request
+    EcomController -> Orchestrator : startSaga("CHECKOUT_SAGA", checkoutData)
+    
+    Orchestrator -> SagaRepo : save(sagaInstance)
+    SagaRepo --> Orchestrator : sagaId
+    
+    note over Orchestrator : Begin Saga Execution
+    
+    ' Step 1: Validate Stock
+    Orchestrator -> StoreController : POST /stock/validate\n{items, sagaId, correlationId}
+    StoreController -> StoreController : Check inventory availability
+    alt Stock available
+        StoreController --> Orchestrator : {success: true, available: true}
+        
+        ' Step 2: Reserve Stock
+        Orchestrator -> StoreController : POST /stock/reserve\n{items, reservationId, sagaId}
+        StoreController -> StockRepo : create reservation
+        StockRepo --> StoreController : reservation created
+        StoreController --> Orchestrator : {success: true, reservationId}
+        
+        ' Step 3: Process Payment
+        Orchestrator -> PaymentService : processPayment(amount, paymentMethod, sagaId)
+        PaymentService -> PaymentService : Process with payment provider
+        alt Payment successful
+            PaymentService --> Orchestrator : {success: true, transactionId}
+            
+            ' Step 4: Commit Stock Reservation
+            Orchestrator -> StoreController : POST /stock/commit\n{reservationId, sagaId}
+            StoreController -> StockRepo : update status to COMMITTED
+            StockRepo --> StoreController : committed
+            StoreController --> Orchestrator : {success: true}
+            
+            ' Step 5: Finalize Order
+            Orchestrator -> Orchestrator : finalizeOrder()
+            Orchestrator -> SagaRepo : updateState(sagaId, "COMPLETED")
+            
+            Orchestrator --> EcomController : {success: true, sagaId, orderId}
+            EcomController --> Gateway : 201 Created {orderId, sagaId, status: "completed"}
+            Gateway --> Client : 201 Created {orderId, sagaId}
+            
+        else Payment failed
+            note over Orchestrator : Begin Compensation
+            Orchestrator -> StoreController : POST /stock/release\n{reservationId, sagaId}
+            StoreController -> StockRepo : update status to RELEASED
+            Orchestrator -> SagaRepo : updateState(sagaId, "COMPENSATED")
+            Orchestrator --> EcomController : {success: false, error: "Payment failed"}
+            EcomController --> Gateway : 402 Payment Required
+            Gateway --> Client : 402 Payment Required
         end
-    else Product not found
-        Service --> Controller : Error "Product not found"
-        Controller --> Route : 404 Not Found {"error":"Product not found"}
-        Route --> Gateway : 404 Not Found
-        Gateway --> Client : 404 Not Found
+        
+    else Stock insufficient
+        Orchestrator -> SagaRepo : updateState(sagaId, "FAILED")
+        Orchestrator --> EcomController : {success: false, error: "Insufficient stock"}
+        EcomController --> Gateway : 409 Conflict
+        Gateway --> Client : 409 Conflict
     end
+    
 else Token invalid
     Gateway --> Client : 401 Unauthorized
 end
+
 @enduml

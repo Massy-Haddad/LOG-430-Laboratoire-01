@@ -1,0 +1,76 @@
+@startuml saga-state-diagram
+!theme plain
+title Diagramme d'État - Saga Orchestrée (Laboratoire 6)
+
+' Style configuration
+skinparam state {
+    BackgroundColor lightblue
+    BorderColor navy
+    FontSize 12
+}
+
+' Initial state
+[*] --> PENDING
+
+' Main saga states
+state PENDING {
+    PENDING : Saga créée
+    PENDING : En attente de démarrage
+}
+
+state RUNNING {
+    RUNNING : Saga en cours d'exécution
+    RUNNING : Étapes métier en cours
+}
+
+state COMPLETED {
+    COMPLETED : Saga terminée avec succès
+    COMPLETED : Transaction distribuée validée
+}
+
+state FAILED {
+    FAILED : Saga échouée
+    FAILED : Déclenchement compensation
+}
+
+state COMPENSATING {
+    COMPENSATING : Compensation en cours
+    COMPENSATING : Rollback des étapes
+}
+
+state COMPENSATED {
+    COMPENSATED : Compensation terminée
+    COMPENSATED : État cohérent restauré
+}
+
+' Main transitions
+PENDING --> RUNNING : startSaga()
+RUNNING --> COMPLETED : Succès
+RUNNING --> FAILED : Échec étape
+FAILED --> COMPENSATING : Début rollback
+COMPENSATING --> COMPENSATED : Fin rollback
+
+' Final states
+COMPLETED --> [*]
+COMPENSATED --> [*]
+
+' Error handling
+COMPENSATING --> FAILED : Échec compensation\n(retry)
+
+note right of RUNNING
+    **Étapes Saga Checkout:**
+    1. Valider stock
+    2. Réserver stock
+    3. Traiter paiement
+    4. Confirmer stock
+    5. Finaliser commande
+end note
+
+note left of COMPENSATING
+    **Actions de compensation:**
+    • Rembourser paiement
+    • Libérer réservation stock
+    • Annuler commande
+end note
+
+@enduml

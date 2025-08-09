@@ -2,7 +2,7 @@
 !theme plain
 skinparam packageStyle rectangle
 
-title Logical View
+title Logical View - Laboratory 6: Saga Orchestrated Pattern
 
 package "Auth Service" {
   class User {
@@ -20,31 +20,31 @@ package "Auth Service" {
 
 package "Store Service" {
   class Store {
-    +id: Integer [PK]
+    +id: UUID [PK]
     +name: String
     +address: String
-    +manager_id: Integer [FK]
+    +manager_id: UUID [FK]
     +is_active: Boolean
     +created_at: Timestamp
     +updated_at: Timestamp
   }
   
   class Product {
-    +id: Integer [PK]
+    +id: UUID [PK]
     +name: String
     +description: Text
     +price: Decimal(10,2)
     +category: String
-    +store_id: Integer [FK]
+    +store_id: UUID [FK]
     +is_active: Boolean
     +created_at: Timestamp
     +updated_at: Timestamp
   }
   
   class Inventory {
-    +id: Integer [PK]
-    +store_id: Integer [FK]
-    +product_id: Integer [FK]
+    +id: UUID [PK]
+    +store_id: UUID [FK]
+    +product_id: UUID [FK]
     +quantity: Integer
     +min_threshold: Integer
     +max_threshold: Integer
@@ -52,22 +52,38 @@ package "Store Service" {
   }
   
   class Sale {
-    +id: Integer [PK]
-    +store_id: Integer [FK]
-    +product_id: Integer [FK]
-    +user_id: Integer [FK]
+    +id: UUID [PK]
+    +store_id: UUID [FK]
+    +product_id: UUID [FK]
+    +user_id: UUID [FK]
     +quantity: Integer
     +unit_price: Decimal(10,2)
     +total_price: Decimal(10,2)
     +sale_date: Timestamp
   }
+  
+  class StockReservation {
+    +id: UUID [PK]
+    +product_id: UUID [FK]
+    +store_id: UUID [FK]
+    +quantity: Integer
+    +reserved_quantity: Integer
+    +status: Enum(PENDING, COMMITTED, RELEASED, EXPIRED)
+    +saga_id: UUID [FK]
+    +correlation_id: UUID
+    +expires_at: Timestamp
+    +created_at: Timestamp
+    +updated_at: Timestamp
+    +committed_at: Timestamp
+    +released_at: Timestamp
+  }
 }
 
 package "E-commerce Service" {
   class CartItem {
-    +id: Integer [PK]
-    +user_id: Integer [FK]
-    +product_id: Integer [FK]
+    +id: UUID [PK]
+    +user_id: UUID [FK]
+    +product_id: UUID [FK]
     +product_name: String
     +product_price: Decimal(10,2)
     +quantity: Integer
@@ -76,9 +92,9 @@ package "E-commerce Service" {
   }
   
   class Order {
-    +id: Integer [PK]
+    +id: UUID [PK]
     +order_number: String [unique]
-    +user_id: Integer [FK]
+    +user_id: UUID [FK]
     +status: Enum(pending, confirmed, processing, shipped, delivered, cancelled)
     +total_amount: Decimal(10,2)
     +items: JSONB
@@ -86,6 +102,40 @@ package "E-commerce Service" {
     +billing_address: JSONB
     +payment_method: JSONB
     +payment_status: Enum(pending, processing, completed, failed, refunded)
+    +saga_id: UUID [FK]
+    +created_at: Timestamp
+    +updated_at: Timestamp
+  }
+  
+  class SagaInstance {
+    +id: UUID [PK]
+    +type: String
+    +data: JSONB
+    +state: Enum(PENDING, RUNNING, COMPLETED, FAILED, COMPENSATING, COMPENSATED)
+    +current_step: Integer
+    +completed_steps: JSONB
+    +failed_steps: JSONB
+    +compensation_steps: JSONB
+    +correlation_id: UUID
+    +created_at: Timestamp
+    +updated_at: Timestamp
+    +completed_at: Timestamp
+    +failed_at: Timestamp
+  }
+  
+  class PaymentTransaction {
+    +id: UUID [PK]
+    +order_id: UUID [FK]
+    +amount: Decimal(10,2)
+    +currency: String
+    +payment_method: String
+    +provider_transaction_id: String
+    +status: Enum(PENDING, PROCESSING, COMPLETED, FAILED, REFUNDED)
+    +saga_id: UUID [FK]
+    +correlation_id: UUID
+    +metadata: JSONB
+    +processed_at: Timestamp
+    +refunded_at: Timestamp
     +created_at: Timestamp
     +updated_at: Timestamp
   }
@@ -99,9 +149,15 @@ Store ||--o{ User : employs
 Store ||--o{ Product : contains
 Store ||--o{ Sale : records
 Store ||--o{ Inventory : manages
+Store ||--o{ StockReservation : manages
 Product ||--o{ Sale : sold_in
 Product ||--o{ CartItem : added_as
 Product ||--o{ Inventory : tracked_in
+Product ||--o{ StockReservation : reserved_in
+SagaInstance ||--o{ Order : orchestrates
+SagaInstance ||--o{ PaymentTransaction : coordinates
+SagaInstance ||--o{ StockReservation : manages
+Order ||--o{ PaymentTransaction : involves
 
 @enduml
     - userId: Integer
@@ -115,53 +171,58 @@ Product ||--o{ Inventory : tracked_in
   }
 }
 
-package "E-commerce Domain" <<Rectangle>> {
+package "Saga Orchestration Domain" <<Rectangle>> {
   
-  class Cart {
-    - id: String
-    - userId: Integer?
-    - items: List<CartItem>
-    - createdAt: DateTime
-    - updatedAt: DateTime
-    - expiresAt: DateTime
+  class SagaOrchestrator {
+    - sagaRepository: SagaRepository
+    - sagaStateMachine: SagaStateMachine
     --
-    + addItem(productId: Integer, quantity: Integer): void
-    + removeItem(productId: Integer): void
-    + updateQuantity(productId: Integer, quantity: Integer): void
-    + calculateTotal(): Decimal
-    + clear(): void
-    + isExpired(): Boolean
+    + startSaga(type: String, data: Object): UUID
+    + executeSaga(sagaId: UUID): void
+    + executeStep(sagaInstance: SagaInstance, step: Object): Object
+    + initiateCompensation(sagaInstance: SagaInstance, error: Error): void
+    + compensateStep(sagaInstance: SagaInstance, step: Object): void
   }
   
-  class CartItem {
-    - productId: Integer
-    - quantity: Integer
-    - price: Decimal
-    - addedAt: DateTime
+  class SagaStateMachine {
+    - sagaDefinitions: Map<String, Object>
     --
-    + getSubtotal(): Decimal
-    + updateQuantity(newQuantity: Integer): void
+    + getSteps(sagaType: String): List<Object>
+    + getCompensationSteps(sagaType: String): List<Object>
+    + getNextStep(sagaType: String, currentStep: Integer): Object
   }
   
-  class Order {
-    - id: Integer
-    - userId: Integer?
-    - cartId: String
-    - status: OrderStatus
-    - total: Decimal
-    - createdAt: DateTime
-    - completedAt: DateTime?
+  class SagaRepository {
     --
-    + process(): void
-    + cancel(): void
-    + complete(): void
+    + save(sagaInstance: SagaInstance): void
+    + findById(id: UUID): SagaInstance
+    + findByState(state: String): List<SagaInstance>
+    + update(sagaInstance: SagaInstance): void
+    + findActiveSagas(): List<SagaInstance>
   }
   
-  enum OrderStatus {
+  enum SagaState {
+    PENDING
+    RUNNING
+    COMPLETED
+    FAILED
+    COMPENSATING
+    COMPENSATED
+  }
+  
+  enum ReservationStatus {
+    PENDING
+    COMMITTED
+    RELEASED
+    EXPIRED
+  }
+  
+  enum PaymentStatus {
     PENDING
     PROCESSING
     COMPLETED
-    CANCELLED
+    FAILED
+    REFUNDED
   }
 }
 
@@ -203,6 +264,14 @@ Product ||--o{ Inventory : "stocked in"
 Product ||--o{ Sale : "sold as"
 Store ||--o{ Sale : "processes"
 Sale }o--|| Product : "references"
+
+' Saga Relationships
+SagaOrchestrator --> SagaRepository : uses
+SagaOrchestrator --> SagaStateMachine : uses
+SagaOrchestrator --> SagaInstance : orchestrates
+SagaInstance::state --> SagaState
+StockReservation::status --> ReservationStatus
+PaymentTransaction::status --> PaymentStatus
 
 User ||--o{ LoginLog : "generates"
 User ||--o{ AuthSession : "has"
@@ -248,8 +317,12 @@ note top of User : "Central entity for authentication\nand authorization across 
 
 note right of Sale : "Core transaction entity\ntracked for reporting and analytics"
 
-note left of Cart : "Temporary shopping container\nwith expiration for cleanup"
+note left of SagaInstance : "Orchestrates distributed transactions\nacross microservices with compensation"
 
 note bottom of JWTToken : "Stateless authentication token\nwith role-based access control"
+
+note right of StockReservation : "Temporary stock holds during\nsaga execution with auto-expiration"
+
+note left of PaymentTransaction : "Payment processing with\ncompensation support for refunds"
 
 @enduml
